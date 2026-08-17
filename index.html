@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Opi — Vocals from another world</title>
+<meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -164,9 +165,87 @@
     .split{grid-template-columns:1fr;gap:34px}
     section{padding:70px 0}
   }
+
+  /* ---------- preview gate ---------- */
+  html.locked{overflow:hidden}
+  #gate{
+    position:fixed;inset:0;z-index:999;
+    background:
+      radial-gradient(ellipse at 50% 110%, rgba(242,107,79,.28), transparent 55%),
+      radial-gradient(ellipse at 50% -10%, rgba(168,164,206,.22), transparent 55%),
+      var(--ink);
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;
+  }
+  #gate::before{
+    content:'';position:absolute;left:0;right:0;bottom:0;height:14px;
+    background:repeating-linear-gradient(-45deg, var(--stripe-a) 0 14px, var(--stripe-b) 14px 28px);
+  }
+  .gate-logo{font-size:clamp(5rem,14vw,9rem);line-height:1;color:var(--cream)}
+  .gate-sub{color:var(--lav);font-size:.95rem;margin:6px 0 30px;letter-spacing:.06em}
+  .gate-form{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .gate-form input{
+    background:var(--ink-2);border:1.5px solid rgba(168,164,206,.35);border-radius:999px;
+    padding:13px 22px;color:var(--cream);font-family:'Inter',sans-serif;font-size:1rem;outline:none;
+    width:240px;text-align:center;letter-spacing:.2em;
+  }
+  .gate-form input:focus{border-color:var(--coral)}
+  .gate-form input.shake{animation:shake .35s}
+  @keyframes shake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+  .gate-hint{color:#5d5a80;font-size:.78rem;margin-top:22px}
 </style>
 </head>
 <body>
+
+<div id="gate">
+  <div>
+    <div class="gate-logo blackletter">Opi</div>
+    <div class="gate-sub">a world in progress</div>
+    <form class="gate-form" id="gateForm" autocomplete="off">
+      <input type="password" id="gatePass" placeholder="password" aria-label="password" autofocus>
+      <button class="btn" type="submit">Enter</button>
+    </form>
+    <div class="gate-hint">Private preview · invited guests only</div>
+  </div>
+</div>
+<script>
+(function(){
+  var HASH='2070f725ff1c765b73c498de52bc419377979691f6100de3ed99794aeb40d988';
+  var KEY='opi-gate-ok';
+  var root=document.documentElement, gate=document.getElementById('gate');
+  function open(){ gate.remove(); root.classList.remove('locked'); }
+  function remembered(){ try{ return localStorage.getItem(KEY)===HASH; }catch(e){ return false; } }
+  function remember(){ try{ localStorage.setItem(KEY,HASH); }catch(e){} }
+  if(remembered()){ open(); return; }
+  root.classList.add('locked');
+  // Self-contained SHA-256 (works on http, https, and file:// alike)
+  function sha256(ascii){
+    function rr(v,a){return (v>>>a)|(v<<(32-a));}
+    var mp=Math.pow, mx=mp(2,32), i, j, res='', words=[], al=ascii.length*8;
+    var hash=sha256.h=sha256.h||[], k=sha256.k=sha256.k||[], pc=k.length, ip={};
+    for(var c=2; pc<64; c++){ if(!ip[c]){ for(i=0;i<313;i+=c) ip[i]=c;
+      hash[pc]=(mp(c,.5)*mx)|0; k[pc++]=(mp(c,1/3)*mx)|0; } }
+    ascii+='\x80'; while(ascii.length%64-56) ascii+='\x00';
+    for(i=0;i<ascii.length;i++){ j=ascii.charCodeAt(i); if(j>>8) return; words[i>>2]|=j<<((3-i)%4)*8; }
+    words[words.length]=(al/mx)|0; words[words.length]=al;
+    for(j=0;j<words.length;){ var w=words.slice(j,j+=16), oh=hash; hash=hash.slice(0,8);
+      for(i=0;i<64;i++){ var w15=w[i-15], w2=w[i-2], a=hash[0], e=hash[4];
+        var t1=hash[7]+(rr(e,6)^rr(e,11)^rr(e,25))+((e&hash[5])^((~e)&hash[6]))+k[i]
+          +(w[i]=(i<16)?w[i]:(w[i-16]+(rr(w15,7)^rr(w15,18)^(w15>>>3))+w[i-7]+(rr(w2,17)^rr(w2,19)^(w2>>>10)))|0);
+        var t2=(rr(a,2)^rr(a,13)^rr(a,22))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));
+        hash=[(t1+t2)|0].concat(hash); hash[4]=(hash[4]+t1)|0; }
+      for(i=0;i<8;i++) hash[i]=(hash[i]+oh[i])|0; }
+    for(i=0;i<8;i++) for(j=3;j+1;j--){ var b=(hash[i]>>(j*8))&255; res+=((b<16)?0:'')+b.toString(16); }
+    return res;
+  }
+  document.getElementById('gateForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var inp=document.getElementById('gatePass');
+    var h=sha256(inp.value.trim().toLowerCase());
+    if(h===HASH){ remember(); open(); }
+    else{ inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake'); inp.value=''; }
+  });
+})();
+</script>
 
 <nav>
   <div class="nav-inner">
