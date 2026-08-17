@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opi — Vocals from another world</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14142b;
+    --ink-2:#1d1d3a;
+    --ink-3:#26264a;
+    --cream:#f4f0e6;
+    --lav:#a8a4ce;
+    --lav-2:#c9c4e4;
+    --coral:#f26b4f;
+    --red:#e0392e;
+    --stripe-a:#1b1b33;
+    --stripe-b:#f26b4f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--cream);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+  .blackletter{font-family:'Pirata One',serif;font-weight:400}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif}
+  .mono{font-family:'JetBrains Mono',monospace}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    background:color-mix(in srgb, var(--ink) 82%, transparent);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(168,164,206,.14);
+  }
+  .nav-inner{max-width:1200px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+  .nav-logo{font-size:2rem;color:var(--cream);text-decoration:none;line-height:1}
+  .nav-links{display:flex;gap:28px;align-items:center}
+  .nav-links a{color:var(--lav);text-decoration:none;font-size:.92rem;font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:var(--cream)}
+  .btn{
+    display:inline-block;background:var(--coral);color:var(--ink);
+    padding:12px 26px;border-radius:999px;text-decoration:none;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.95rem;
+    transition:transform .15s, background .2s;border:none;cursor:pointer;
+  }
+  .btn:hover{transform:translateY(-2px);background:#ff8266}
+  .btn.ghost{background:transparent;color:var(--cream);border:1.5px solid rgba(244,240,230,.4)}
+  .btn.ghost:hover{border-color:var(--cream);background:rgba(244,240,230,.06)}
+
+  /* ---------- hero ---------- */
+  header{
+    position:relative;min-height:100vh;display:flex;align-items:flex-end;
+    background:url('assets/hero.jpg') center 30%/cover no-repeat;
+  }
+  header::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(20,20,43,.25) 0%, rgba(20,20,43,.05) 35%, rgba(20,20,43,.82) 78%, var(--ink) 100%);
+  }
+  .hero-inner{position:relative;z-index:2;width:100%;padding:0 24px 9vh;max-width:1200px;margin:0 auto}
+  .hero-logo{font-size:clamp(6rem,16vw,12rem);line-height:.9;color:var(--ink);text-shadow:0 2px 0 rgba(244,240,230,.25)}
+  .hero-logo-wrap{margin-bottom:2px}
+  h1.tagline{font-size:clamp(1.4rem,3vw,2.1rem);font-weight:700;max-width:640px;color:var(--cream)}
+  .hero-sub{color:var(--lav-2);max-width:560px;margin:14px 0 30px;font-size:1.02rem}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-badges{display:flex;gap:22px;margin-top:38px;flex-wrap:wrap}
+  .hero-badges span{font-size:.8rem;color:var(--lav);letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+  .hero-badges span::before{content:'✦ ';color:var(--coral)}
+
+  /* ---------- stripe divider ---------- */
+  .stripes{
+    height:14px;
+    background:repeating-linear-gradient(-45deg, var(--stripe-a) 0 14px, var(--stripe-b) 14px 28px);
+  }
+
+  /* ---------- sections ---------- */
+  section{padding:96px 0}
+  .kicker{color:var(--coral);font-family:'JetBrains Mono',monospace;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
+  h2{font-size:clamp(1.9rem,4vw,2.8rem);font-weight:700;margin-bottom:14px}
+  .section-sub{color:var(--lav);max-width:600px;margin-bottom:48px}
+
+  /* ---------- vocal cards ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:22px}
+  .card{
+    background:var(--ink-2);border:1px solid rgba(168,164,206,.12);border-radius:18px;
+    overflow:hidden;transition:transform .18s, border-color .2s;cursor:pointer;
+  }
+  .card:hover{transform:translateY(-5px);border-color:rgba(242,107,79,.5)}
+  .card-art{height:150px;position:relative;display:flex;align-items:center;justify-content:center}
+  .card:nth-child(4n+1) .card-art{background:repeating-linear-gradient(100deg,#1b1b33 0 16px,#f26b4f 16px 30px)}
+  .card:nth-child(4n+2) .card-art{background:repeating-linear-gradient(-70deg,#1b1b33 0 16px,#a8a4ce 16px 30px)}
+  .card:nth-child(4n+3) .card-art{background:repeating-linear-gradient(160deg,#f26b4f 0 16px,#c9c4e4 16px 30px)}
+  .card:nth-child(4n+4) .card-art{background:repeating-linear-gradient(30deg,#26264a 0 16px,#e0392e 16px 30px)}
+  .play{
+    width:54px;height:54px;border-radius:50%;background:var(--ink);color:var(--cream);
+    display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+    border:2px solid var(--cream);opacity:.92;transition:transform .15s;
+  }
+  .card:hover .play{transform:scale(1.12)}
+  .card-body{padding:18px 20px 20px}
+  .card-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.12rem;margin-bottom:6px}
+  .card-meta{display:flex;gap:8px;margin-bottom:14px}
+  .chip{font-family:'JetBrains Mono',monospace;font-size:.72rem;background:var(--ink-3);color:var(--lav-2);padding:3px 9px;border-radius:6px}
+  .card-foot{display:flex;justify-content:space-between;align-items:center}
+  .price{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.15rem;color:var(--coral)}
+  .lic{font-size:.72rem;color:var(--lav)}
+  .view-all{text-align:center;margin-top:44px}
+
+  /* ---------- ladder ---------- */
+  .ladder{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+  .rung{background:var(--ink-2);border:1px solid rgba(168,164,206,.12);border-radius:18px;padding:30px 26px;position:relative}
+  .rung.hot{border-color:var(--coral);background:linear-gradient(180deg, rgba(242,107,79,.09), var(--ink-2))}
+  .rung .tier{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--lav);margin-bottom:10px}
+  .rung .amount{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:700;margin-bottom:8px}
+  .rung p{color:var(--lav);font-size:.9rem}
+  .rung .soon{position:absolute;top:16px;right:16px;font-size:.66rem;background:var(--ink-3);color:var(--lav-2);padding:3px 9px;border-radius:6px;letter-spacing:.06em;text-transform:uppercase}
+
+  /* ---------- how it works ---------- */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}
+  .step{background:var(--ink-2);border-radius:18px;padding:34px 28px;border:1px solid rgba(168,164,206,.12)}
+  .step .num{font-family:'Pirata One',serif;font-size:2.6rem;color:var(--coral);line-height:1;margin-bottom:14px}
+  .step h3{font-size:1.15rem;margin-bottom:10px}
+  .step p{color:var(--lav);font-size:.92rem}
+
+  /* ---------- split sections (voice / about) ---------- */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+  .split img{width:100%;border-radius:22px;display:block}
+  .waitlist{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+  .waitlist input{
+    flex:1;min-width:220px;background:var(--ink-2);border:1.5px solid rgba(168,164,206,.3);
+    border-radius:999px;padding:13px 22px;color:var(--cream);font-family:'Inter',sans-serif;font-size:.95rem;outline:none;
+  }
+  .waitlist input:focus{border-color:var(--coral)}
+
+  /* ---------- planet strip ---------- */
+  .planet{
+    background:var(--ink-2);border-top:1px solid rgba(168,164,206,.12);border-bottom:1px solid rgba(168,164,206,.12);
+    padding:56px 0;
+  }
+  .planet-inner{display:flex;gap:40px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .planet h3{font-size:1.4rem;margin-bottom:8px}
+  .planet p{color:var(--lav);max-width:560px;font-size:.95rem}
+  .planet .counter{font-family:'JetBrains Mono',monospace;color:var(--coral);font-size:.85rem;margin-top:10px}
+
+  /* ---------- footer ---------- */
+  footer{padding:70px 0 46px;border-top:1px solid rgba(168,164,206,.12)}
+  .foot-inner{display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap}
+  .foot-logo{font-size:3rem;line-height:1}
+  .socials{display:flex;gap:18px;margin-top:10px}
+  .socials a{color:var(--lav);text-decoration:none;font-size:.9rem}
+  .socials a:hover{color:var(--cream)}
+  .fineprint{color:#5d5a80;font-size:.78rem;margin-top:40px}
+
+  @media (max-width:820px){
+    .nav-links{display:none}
+    .split{grid-template-columns:1fr;gap:34px}
+    section{padding:70px 0}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo blackletter" href="#">Opi</a>
+    <div class="nav-links">
+      <a href="#vocals">Vocals</a>
+      <a href="#pricing">Licensing</a>
+      <a href="#voice">Opi Voice</a>
+      <a href="#planet">Planet</a>
+      <a href="#about">About</a>
+      <a class="btn" href="#vocals" style="padding:10px 22px">Browse vocals</a>
+    </div>
+  </div>
+</nav>
+
+<header>
+  <div class="hero-inner">
+    <div class="hero-logo-wrap"><span class="hero-logo blackletter">Opi</span></div>
+    <h1 class="tagline">Toplines from a world of her own.</h1>
+    <p class="hero-sub">Premium EDM vocals — written, sung, and licensed straight from the artist. Full stems, instant delivery, and a real 50/50 partnership on every track.</p>
+    <div class="hero-ctas">
+      <a class="btn" href="#vocals">Browse vocals</a>
+      <a class="btn ghost" href="#custom">Custom work</a>
+    </div>
+    <div class="hero-badges">
+      <span>50/50 partnership license</span>
+      <span>Dry + wet stems included</span>
+      <span>feat. Opi credit</span>
+      <span>Instant delivery</span>
+    </div>
+  </div>
+</header>
+
+<div class="stripes"></div>
+
+<section id="vocals">
+  <div class="wrap">
+    <div class="kicker">The catalog</div>
+    <h2>Non-exclusive vocals</h2>
+    <p class="section-sub">Every topline comes with the full acapella, dry &amp; wet stems, and the lyric sheet. Licensed under a real contract, signed at checkout — you build the record, we split it 50/50, and it releases as <em>feat.&nbsp;Opi</em>.</p>
+    <div class="grid">
+      <div class="card"><div class="card-art"><div class="play">▶</div></div><div class="card-body"><div class="card-title">Gasoline</div><div class="card-meta"><span class="chip">150 BPM</span><span class="chip">A♭ major</span></div><div class="card-foot"><span class="price">$80</span><span class="lic">Non-exclusive</span></div></div></div>
+      <div class="card"><div class="card-art"><div class="play">▶</div></div><div class="card-body"><div class="card-title">Hit Hard</div><div class="card-meta"><span class="chip">128 BPM</span><span class="chip">B♭ minor</span></div><div class="card-foot"><span class="price">$80</span><span class="lic">Non-exclusive</span></div></div></div>
+      <div class="card"><div class="card-art"><div class="play">▶</div></div><div class="card-body"><div class="card-title">Alone</div><div class="card-meta"><span class="chip">113 BPM</span><span class="chip">F♯ major</span></div><div class="card-foot"><span class="price">$80</span><span class="lic">Non-exclusive</span></div></div></div>
+      <div class="card"><div class="card-art"><div class="play">▶</div></div><div class="card-body"><div class="card-title">Oceans Deep</div><div class="card-meta"><span class="chip">80 BPM</span><span class="chip">C♯ minor</span></div><div class="card-foot"><span class="price">$80</span><span class="lic">Non-exclusive</span></div></div></div>
+      <div class="card"><div class="card-art"><div class="play">▶</div></div><div class="card-body"><div class="card-title">Phoenix Rise</div><div class="card-meta"><span class="chip">85 BPM</span><span class="chip">F lydian</span></div><div class="card-foot"><span class="price">$80</span><span class="lic">Non-exclusive</span></div></div></div>
+      <div class="card"><div class="card-art"><div class="play">▶</div></div><div class="card-body"><div class="card-title">Life Raft</div><div class="card-meta"><span class="chip">115 BPM</span><span class="chip">G minor</span></div><div class="card-foot"><span class="price">$80</span><span class="lic">Non-exclusive</span></div></div></div>
+      <div class="card"><div class="card-art"><div class="play">▶</div></div><div class="card-body"><div class="card-title">Over My Dead Grave</div><div class="card-meta"><span class="chip">145 BPM</span><span class="chip">A minor</span></div><div class="card-foot"><span class="price">$80</span><span class="lic">Non-exclusive</span></div></div></div>
+      <div class="card"><div class="card-art"><div class="play">▶</div></div><div class="card-body"><div class="card-title">Something Good</div><div class="card-meta"><span class="chip">136 BPM</span><span class="chip">G minor</span></div><div class="card-foot"><span class="price">$80</span><span class="lic">Non-exclusive</span></div></div></div>
+    </div>
+    <div class="view-all"><a class="btn ghost" href="#">View all 16 vocals →</a></div>
+  </div>
+</section>
+
+<section id="pricing" style="padding-top:0">
+  <div class="wrap">
+    <div class="kicker">The ladder</div>
+    <h2>Ways to work with Opi</h2>
+    <p class="section-sub">From building blocks to one-of-one exclusives.</p>
+    <div class="ladder">
+      <div class="rung"><span class="soon">Coming soon</span>
+        <div class="tier">Sample packs</div>
+        <div class="amount">$39+</div>
+        <p>Phrases, ad-libs, harmonies &amp; one-shots. Royalty-free — chop, flip, release.</p>
+      </div>
+      <div class="rung hot">
+        <div class="tier">Non-exclusive topline</div>
+        <div class="amount">$80</div>
+        <p>A full song's vocals with every stem. 50/50 partnership, feat. Opi credit.</p>
+      </div>
+      <div class="rung">
+        <div class="tier">Exclusive topline</div>
+        <div class="amount">$800+</div>
+        <p>One buyer, ever. Pulled from every store the moment it's yours.</p>
+      </div>
+      <div class="rung" id="custom">
+        <div class="tier">Custom work</div>
+        <div class="amount">Inquire</div>
+        <p>Your track, written on and sung to order. Tell me about the record.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stripes"></div>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">How it works</div>
+    <h2>Three steps. One contract. Zero mystery.</h2>
+    <p class="section-sub">The license isn't hidden in an email afterward — it's right there at checkout.</p>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><h3>Pick your vocal</h3><p>Preview every topline. Check the BPM, the key, the lyric sheet. Full dry &amp; wet stems come with it.</p></div>
+      <div class="step"><div class="num">2</div><h3>Sign at checkout</h3><p>Type your name, agree to the license, pay. Both of us instantly get the signed PDF — your proof, forever.</p></div>
+      <div class="step"><div class="num">3</div><h3>Build &amp; release</h3><p>Produce the record. Release it as <em>feat. Opi</em>. We each keep 50% — master, publishing, writer's share.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="voice" style="padding-top:0">
+  <div class="wrap split">
+    <img src="assets/voice.jpg" alt="Opi Voice">
+    <div>
+      <div class="kicker">Coming to this universe</div>
+      <h2>Opi Voice</h2>
+      <p style="color:var(--lav);margin-bottom:6px">Sing your idea. Hear it in my voice.</p>
+      <p style="color:var(--lav)">The official, artist-owned Opi vocal model. Record your topline, convert it to my voice, and release it — licensed, credited, and split fairly. Not a company renting my voice out. Me, handing you the mic.</p>
+      <div class="waitlist">
+        <input type="email" placeholder="your@email.com">
+        <button class="btn">Join the waitlist</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="planet" id="planet">
+  <div class="wrap planet-inner">
+    <div>
+      <h3>Net-positive by design 🌱</h3>
+      <p>Every song's footprint is measured — servers, model, studio — and we fund 10× that in verified carbon removal and water restoration. No vague green words. Receipts, publicly.</p>
+      <div class="counter">→ 0 kg CO₂ removed · 0 L water restored (counter goes live at launch)</div>
+    </div>
+    <a class="btn ghost" href="#">Read the methodology</a>
+  </div>
+</div>
+
+<section id="about">
+  <div class="wrap split">
+    <div>
+      <div class="kicker">The artist</div>
+      <h2>About Opi</h2>
+      <p style="color:var(--lav)">[ Bio goes here — voice-dictate a few lines and Claude drops them in. Who Opi is, the world she comes from, why the project exists: artist-owned, planet-honest, built to hand other producers a voice. ]</p>
+      <div class="socials" style="margin-top:22px">
+        <a href="https://www.instagram.com/opi.forever">Instagram</a>
+        <a href="#">TikTok</a>
+        <a href="#">YouTube</a>
+        <a href="#">X</a>
+        <a href="https://open.spotify.com/artist/3n3jBn86eVpuHjygk4Mp15">Spotify</a>
+        <a href="https://www.voclio.com/artist/Opi">Voclio</a>
+      </div>
+    </div>
+    <img src="assets/figure.jpg" alt="Opi figure">
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <div>
+      <div class="foot-logo blackletter">Opi</div>
+      <div class="socials"><a href="#">@opi.forever</a></div>
+    </div>
+    <div style="color:var(--lav);font-size:.88rem;max-width:340px">
+      Premium EDM toplines, artist-owned AI, and a storefront that splits fairly — with the planet too.
+    </div>
+  </div>
+  <div class="wrap fineprint">© 2026 Opi · License terms · Acceptable use · Planet methodology · Built artist-owned.</div>
+</footer>
+
+</body>
+</html>
