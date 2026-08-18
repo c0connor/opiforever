@@ -3,9 +3,10 @@
 Generate tagged, low-bitrate 45-second preview clips for the Opi store.
 
 - Source: each track's demo mix WAV (vocal + beat) — NOT the clean acapella.
-- Picks the loudest 45s window (≈ the hook), fades in/out.
-- Overlays a soft spoken "Opi" tag every ~12s (placeholder watermark —
-  swap TAG_WAV for Christina's own recorded tag any time).
+- FULL-LENGTH demo mix (complete transparency of what you get), fades in/out.
+- Overlays an "Opi" tag every ~12s. If Christina's own recording exists at
+  assets/tag/opi-tag.wav (or .aiff/.m4a/.mp3) it is used; otherwise a
+  placeholder macOS voice is generated.
 - Exports AAC .m4a at 96 kbps → assets/previews/<slug>.m4a
 
 Uses only macOS built-ins: python3 (audioop/wave), `say`, `afconvert`.
@@ -15,10 +16,10 @@ import audioop, os, subprocess, sys, wave, tempfile
 
 VOCALS = "/Users/christinaoconnor/Documents/CC/Opi/2 - Vocals"
 OUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "previews")
-CLIP_SEC = 45
+CLIP_SEC = None      # None = whole song
 TAG_EVERY = 12       # seconds between tags
 TAG_FIRST = 5        # first tag offset
-TAG_GAIN = 0.28      # tag loudness (0–1)
+TAG_GAIN = 0.55      # tag loudness (0–1)
 RATE = 48000
 
 TRACKS = {
@@ -44,9 +45,17 @@ def load_16bit_stereo_48k(path):
 
 def make_tag_wav():
     tmp = tempfile.mkdtemp()
-    aiff = os.path.join(tmp, "tag.aiff"); wavp = os.path.join(tmp, "tag.wav")
-    voice = "Whisper" if b"Whisper" in subprocess.run(["say", "-v", "?"], capture_output=True).stdout else "Samantha"
-    subprocess.run(["say", "-v", voice, "-r", "150", "-o", aiff, "Opi"], check=True)
+    wavp = os.path.join(tmp, "tag.wav")
+    tag_dir = os.path.join(os.path.dirname(OUT_DIR), "tag")
+    for ext in ("wav", "aiff", "aif", "m4a", "mp3"):
+        own = os.path.join(tag_dir, "opi-tag." + ext)
+        if os.path.exists(own):
+            print("using Christina's tag:", own)
+            subprocess.run(["afconvert", own, "-f", "WAVE", "-d", "LEI16@48000", "-c", "2", wavp], check=True)
+            return load_16bit_stereo_48k(wavp)
+    print("using placeholder macOS tag (drop your recording at assets/tag/opi-tag.wav)")
+    aiff = os.path.join(tmp, "tag.aiff")
+    subprocess.run(["say", "-v", "Samantha", "-r", "165", "-o", aiff, "Opi"], check=True)
     subprocess.run(["afconvert", aiff, "-f", "WAVE", "-d", "LEI16@48000", "-c", "2", wavp], check=True)
     return load_16bit_stereo_48k(wavp)
 
@@ -97,12 +106,15 @@ def main():
         if not os.path.exists(src):
             print("MISSING", src); continue
         data = load_16bit_stereo_48k(src)
-        start = loudest_window(data, CLIP_SEC)
         per_sec = RATE * 4
-        clip = data[start*per_sec:(start+CLIP_SEC)*per_sec]
-        clip = fade(clip, 1.0, 2.5)
+        total_sec = len(data) // per_sec
+        if CLIP_SEC:
+            start = loudest_window(data, CLIP_SEC); clip = data[start*per_sec:(start+CLIP_SEC)*per_sec]; clip_sec = CLIP_SEC
+        else:
+            start = 0; clip = data; clip_sec = total_sec
+        clip = fade(clip, 0.5, 2.5)
         t = TAG_FIRST
-        while t < CLIP_SEC - 1:
+        while t < clip_sec - 1:
             clip = overlay(clip, tag, t, TAG_GAIN); t += TAG_EVERY
         # normalize peak to -1 dBFS
         peak = audioop.max(clip, 2) or 1
@@ -111,7 +123,7 @@ def main():
         w = wave.open(tmpwav, "wb"); w.setnchannels(2); w.setsampwidth(2); w.setframerate(RATE); w.writeframes(clip); w.close()
         out = os.path.join(OUT_DIR, slug + ".m4a")
         subprocess.run(["afconvert", tmpwav, "-f", "m4af", "-d", "aac", "-b", "96000", "-q", "127", "-s", "3", out], check=True)
-        print(f"{slug:16s} start={start:3d}s  {os.path.getsize(out)//1024} KB")
+        print(f"{slug:16s} {clip_sec:3d}s  {os.path.getsize(out)//1024} KB")
 
 if __name__ == "__main__":
     main()

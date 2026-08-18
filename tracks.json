@@ -10,7 +10,12 @@
     "license": "Non-exclusive",
     "art": 1,
     "featured": true,
-    "includes": ["Full acapella (WAV)", "Dry stems: lead, doubles L/R, harmonies L/R, high octave L/R", "Wet stems: lead, backgrounds", "Lyric sheet (PDF)"]
+    "includes": [
+      "Full acapella (WAV)",
+      "Dry stems: lead, doubles L/R, harmonies L/R, high octave L/R",
+      "Wet stems: lead, backgrounds",
+      "Lyric sheet (PDF)"
+    ]
   },
   {
     "slug": "life-raft",
@@ -23,7 +28,12 @@
     "license": "Non-exclusive",
     "art": 2,
     "featured": false,
-    "includes": ["Full acapella (WAV)", "Dry stems: lead, doubles L/R, harmonies L/R, oohs L/R, ad-libs, breaths", "Wet stems: lead, backgrounds, oohs & ad-libs", "Lyric sheet (PDF)"]
+    "includes": [
+      "Full acapella (WAV)",
+      "Dry stems: lead, doubles L/R, harmonies L/R, oohs L/R, ad-libs, breaths",
+      "Wet stems: lead, backgrounds, oohs & ad-libs",
+      "Lyric sheet (PDF)"
+    ]
   },
   {
     "slug": "something-good",
@@ -36,7 +46,12 @@
     "license": "Non-exclusive",
     "art": 3,
     "featured": false,
-    "includes": ["Full acapella (WAV)", "Dry stems: lead, doubles L/R, harmonies L/R, low octave L/R", "Wet stems: lead, backgrounds", "Lyric sheet (PDF)"]
+    "includes": [
+      "Full acapella (WAV)",
+      "Dry stems: lead, doubles L/R, harmonies L/R, low octave L/R",
+      "Wet stems: lead, backgrounds",
+      "Lyric sheet (PDF)"
+    ]
   },
   {
     "slug": "i-need-you",
@@ -49,7 +64,12 @@
     "license": "Non-exclusive",
     "art": 4,
     "featured": false,
-    "includes": ["Full acapella (WAV)", "Dry stems: lead, doubles L/R, harmonies L/R, breaths", "Wet stems: lead, backgrounds", "Lyric sheet (PDF)"]
+    "includes": [
+      "Full acapella (WAV)",
+      "Dry stems: lead, doubles L/R, harmonies L/R, breaths",
+      "Wet stems: lead, backgrounds",
+      "Lyric sheet (PDF)"
+    ]
   },
   {
     "slug": "oceans-deep",
@@ -62,7 +82,12 @@
     "license": "Non-exclusive",
     "art": 5,
     "featured": false,
-    "includes": ["Full acapella (WAV)", "Dry stems: lead, doubles L/R, harmonies L/R, low octave L/R, breaths", "Wet stems: lead, backgrounds", "Lyric sheet (PDF)"]
+    "includes": [
+      "Full acapella (WAV)",
+      "Dry stems: lead, doubles L/R, harmonies L/R, low octave L/R, breaths",
+      "Wet stems: lead, backgrounds",
+      "Lyric sheet (PDF)"
+    ]
   },
   {
     "slug": "sad",
@@ -71,10 +96,14 @@
     "key": "C major",
     "genre": "Indie",
     "mood": "",
-    "price": 80,
+    "price": 50,
     "license": "Non-exclusive",
     "art": 6,
     "featured": false,
-    "includes": ["Dry vocal (WAV)", "Wet vocal (WAV)", "Lyric sheet (PDF)"]
+    "includes": [
+      "Dry vocal (WAV)",
+      "Wet vocal (WAV)",
+      "Lyric sheet (PDF)"
+    ]
   }
 ]

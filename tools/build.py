@@ -14,7 +14,6 @@ SOCIALS = {
     "YouTube": "https://www.youtube.com/@opi.forever",
     "X": "https://x.com/opi.forever",
     "Spotify": "https://open.spotify.com/artist/3n3jBn86eVpuHjygk4Mp15",
-    "Voclio": "https://www.voclio.com/artist/Opi",
 }
 FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">'
 
@@ -30,7 +29,7 @@ def shell(title, body, depth=0, active="", nav=True, desc="Premium EDM toplines,
                    '<div class="nav-links">%s<a class="btn" href="%svocals.html">Browse vocals</a></div></div></nav>') % (p, li, p)
     footer = ('<footer><div class="wrap foot-inner"><div><div class="foot-logo blackletter">Opi</div><div class="socials">%s</div></div>'
               '<div class="muted" style="font-size:.88rem;max-width:340px">Premium EDM toplines, artist-owned AI, and a storefront that splits fairly — with the planet too.</div></div>'
-              '<div class="wrap fineprint">© 2026 Opi · <a href="%sabout.html#license">License terms</a> · <a href="%sabout.html#planet">Planet</a> · <a href="%sabout.html#faq">FAQ</a> · Built artist-owned.</div></footer>'
+              '<div class="wrap fineprint">© 2026 Opi · <a href="%slicense.html">License terms</a> · <a href="%sabout.html#planet">Planet</a> · <a href="%sabout.html#faq">FAQ</a> · Built artist-owned.</div></footer>'
               ) % ("".join('<a href="%s" target="_blank" rel="noopener">%s</a>' % (u, n) for n,u in SOCIALS.items()), p, p, p)
     nowplaying = '<div class="now-playing"><button class="play np-toggle" aria-label="Pause">❚❚</button><span class="np-title"></span><button class="np-close" style="background:none;border:none;color:var(--lav);cursor:pointer;font-size:1rem" aria-label="Close">✕</button></div>'
     return ('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">'
@@ -49,7 +48,7 @@ def card(t, depth=0):
 LADDER = '''<section id="pricing" style="padding-top:0"><div class="wrap"><div class="kicker">The ladder</div><h2>Ways to work with Opi</h2><p class="section-sub">From building blocks to one-of-one exclusives.</p>
 <div class="ladder">
 <div class="rung"><span class="tag">Coming soon</span><div class="tier">Sample packs</div><div class="amount">$39+</div><p>Phrases, ad-libs, harmonies &amp; one-shots. Royalty-free — chop, flip, release.</p></div>
-<div class="rung hot"><div class="tier">Non-exclusive topline</div><div class="amount">$80</div><p>A full song's vocals with every stem. 50/50 partnership, feat. Opi credit.</p></div>
+<div class="rung hot"><div class="tier">Non-exclusive topline</div><div class="amount">$80</div><p>A full song's vocals with every stem. 50/50 partnership, feat. Opi credit. Shorter toplines from $50.</p></div>
 <div class="rung"><span class="tag">By request</span><div class="tier">Exclusive topline</div><div class="amount">$800+</div><p>One buyer, ever. Pulled from every store the moment it's yours.</p></div>
 <div class="rung"><div class="tier">Custom work</div><div class="amount">Inquire</div><p>Your track, written on and sung to order. <a href="about.html#custom" style="color:var(--coral)">Tell me about the record →</a></p></div>
 </div></div></section>'''
@@ -77,7 +76,7 @@ open(os.path.join(ROOT, "index.html"), "w").write(shell("Opi — Toplines from a
 vocals_body = ('<div class="wrap page-head"><div class="kicker">The catalog</div><h1>Non-exclusive vocals</h1>'
     '<p>Every topline comes with the full acapella, dry &amp; wet stems, and the lyric sheet. Licensed under a real contract, signed at checkout — you build the record, we split it 50/50, and it releases as <em>feat.&nbsp;Opi</em>.</p></div>'
     '<section style="padding-top:20px"><div class="wrap"><div class="grid">%s</div>'
-    '<p class="muted" style="margin-top:34px;font-size:.88rem">Previews are 45-second tagged clips of the demo mix. Purchases deliver the full untagged acapella and every stem.</p></div></section>'
+    '<p class="muted" style="margin-top:34px;font-size:.88rem">Previews are the full demo mix, tagged — so you hear exactly what you\'re getting. Purchases deliver the full untagged acapella and every stem.</p></div></section>'
     '<div class="stripes"></div>%s%s') % ("".join(card(t) for t in TRACKS), STEPS, LADDER)
 open(os.path.join(ROOT, "vocals.html"), "w").write(shell("Vocals — Opi", vocals_body, active="vocals"))
 
@@ -93,8 +92,9 @@ for t in TRACKS:
         '<li>Ownership of the new song: <strong>50/50</strong> — master, publishing, and writer\'s share.</li>'
         '<li>Credit in the title: <em>Your Song (feat. Opi)</em>.</li>'
         '<li>Don\'t resell or give away the vocal itself; don\'t make sample packs from it; don\'t register it with Content ID.</li>'
+        '<li><strong>No AI use, ever:</strong> the vocal can\'t be used to train, tune, or build any model or voice clone.</li>'
         '<li>Both of us register the splits with our PROs so royalties actually get collected.</li>'
-        '</ul><a class="muted" href="../about.html#license" style="font-size:.88rem">Read the full terms →</a></div></div>'
+        '</ul><a class="muted" href="../license.html" style="font-size:.88rem">Read the full agreement →</a></div></div>'
         '<div><div class="kicker">%s</div><h1>%s</h1><div class="card-meta"><span class="chip">%d BPM</span><span class="chip">%s</span><span class="chip">%s</span><span class="chip">%s</span></div>'
         '<div class="price">$%d</div><div class="muted" style="font-size:.9rem">One non-exclusive license · instant delivery after checkout</div>'
         '<h3 style="margin-top:26px">What you get</h3><ul>%s</ul>'
@@ -171,8 +171,35 @@ about_body = '''<div class="wrap page-head"><div class="kicker">The artist</div>
 <div class="form-note">Or DM <a href="https://www.instagram.com/opi.forever" target="_blank" rel="noopener" style="color:var(--lav)">@opi.forever</a> on Instagram.</div>
 </div></section>
 <section id="license" style="padding-top:0"><div class="wrap narrow"><div class="kicker">License terms</div><h2 style="font-size:1.6rem">Non-exclusive vocal license — summary</h2>
-<p class="muted">The full agreement is shown and signed at checkout. In short: one new song per license · non-exclusive · perpetual · unlimited streams, sales, video, radio, sync, live · new song owned 50/50 (master, publishing, writer's share) · credit as <em>feat. Opi</em> · no redistribution of the vocal itself, no sample packs, no Content ID registration · both parties register splits with their PROs · refund or chargeback terminates the license · governed by California law.</p>
+<p class="muted"><a href="license.html" style="color:var(--coral)">Read the full agreement →</a> In short: one new song per license · non-exclusive · perpetual · unlimited streams, sales, video, radio, sync, live · new song owned 50/50 (master, publishing, writer's share) · credit as <em>feat. Opi</em> · no redistribution of the vocal itself, no sample packs, no Content ID registration · both parties register splits with their PROs · no AI/ML training or voice cloning, ever · refund or chargeback terminates the license · governed by California law.</p>
 </div></section>''' % "".join('<a href="%s" target="_blank" rel="noopener">%s</a>' % (u, n) for n,u in SOCIALS.items())
 open(os.path.join(ROOT, "about.html"), "w").write(shell("About Opi", about_body, active="about"))
 
-print("built: index.html, vocals.html, voice.html, about.html, vocal/*.html (%d)" % len(TRACKS))
+
+# ---------- 6. Full license page (rendered from the master draft in Opi/4 - Contracts) ----------
+LICENSE_MD = "/Users/christinaoconnor/Documents/CC/Opi/4 - Contracts/OPI Non-Exclusive Vocal License v1.0 DRAFT.md"
+def md_to_html(md):
+    out=[]; in_ul=False
+    for raw in md.splitlines():
+        line=raw.rstrip()
+        if line.startswith("---"): out.append("<hr>"); continue
+        if line.startswith("# "): out.append("<h1>%s</h1>" % esc(line[2:])); continue
+        if line.startswith("## "): out.append("<h2>%s</h2>" % esc(line[3:])); continue
+        if not line.strip(): continue
+        t=esc(line.strip())
+        # inline: **bold**, _italic_, {{FIELD}}
+        import re
+        t=re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", t)
+        t=re.sub(r"(?<!\w)_(.+?)_(?!\w)", r"<em>\1</em>", t)
+        t=re.sub(r"\{\{([A-Z_]+)\}\}", r'<span class="field">[\1]</span>', t)
+        if line.startswith("   ") or line.startswith("—"):
+            out.append('<p class="indent">%s</p>' % t)
+        else:
+            out.append("<p>%s</p>" % t)
+    return "\n".join(out)
+license_body = ('<div class="wrap page-head"><div class="kicker">The contract</div><h1>Non-exclusive vocal license</h1>'
+    '<p>This is the full agreement every buyer signs at checkout — shown in advance so there are no surprises. Fields in [brackets] are filled in automatically with your details and the vocal you\'re licensing.</p></div>'
+    '<section style="padding-top:10px"><div class="wrap narrow legal">%s</div></section>') % md_to_html(open(LICENSE_MD).read())
+open(os.path.join(ROOT, "license.html"), "w").write(shell("License terms — Opi", license_body, active="about"))
+
+print("built: index.html, vocals.html, voice.html, about.html, vocal/*.html (%d), license.html" % len(TRACKS))
