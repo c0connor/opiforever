@@ -1,0 +1,80 @@
+[
+  {
+    "slug": "garbage",
+    "title": "*garbage",
+    "bpm": 70,
+    "key": "D♭ major",
+    "genre": "Pop",
+    "mood": "",
+    "price": 80,
+    "license": "Non-exclusive",
+    "art": 1,
+    "featured": true,
+    "includes": ["Full acapella (WAV)", "Dry stems: lead, doubles L/R, harmonies L/R, high octave L/R", "Wet stems: lead, backgrounds", "Lyric sheet (PDF)"]
+  },
+  {
+    "slug": "life-raft",
+    "title": "Life Raft",
+    "bpm": 115,
+    "key": "G minor",
+    "genre": "EDM",
+    "mood": "",
+    "price": 80,
+    "license": "Non-exclusive",
+    "art": 2,
+    "featured": false,
+    "includes": ["Full acapella (WAV)", "Dry stems: lead, doubles L/R, harmonies L/R, oohs L/R, ad-libs, breaths", "Wet stems: lead, backgrounds, oohs & ad-libs", "Lyric sheet (PDF)"]
+  },
+  {
+    "slug": "something-good",
+    "title": "Something Good",
+    "bpm": 136,
+    "key": "G minor",
+    "genre": "Pop · Indie",
+    "mood": "",
+    "price": 80,
+    "license": "Non-exclusive",
+    "art": 3,
+    "featured": false,
+    "includes": ["Full acapella (WAV)", "Dry stems: lead, doubles L/R, harmonies L/R, low octave L/R", "Wet stems: lead, backgrounds", "Lyric sheet (PDF)"]
+  },
+  {
+    "slug": "i-need-you",
+    "title": "I Need You",
+    "bpm": 135,
+    "key": "C♯ minor",
+    "genre": "Pop",
+    "mood": "",
+    "price": 80,
+    "license": "Non-exclusive",
+    "art": 4,
+    "featured": false,
+    "includes": ["Full acapella (WAV)", "Dry stems: lead, doubles L/R, harmonies L/R, breaths", "Wet stems: lead, backgrounds", "Lyric sheet (PDF)"]
+  },
+  {
+    "slug": "oceans-deep",
+    "title": "Oceans Deep",
+    "bpm": 80,
+    "key": "C♯ minor",
+    "genre": "Pop",
+    "mood": "",
+    "price": 80,
+    "license": "Non-exclusive",
+    "art": 5,
+    "featured": false,
+    "includes": ["Full acapella (WAV)", "Dry stems: lead, doubles L/R, harmonies L/R, low octave L/R, breaths", "Wet stems: lead, backgrounds", "Lyric sheet (PDF)"]
+  },
+  {
+    "slug": "sad",
+    "title": "Sad",
+    "bpm": 115,
+    "key": "C major",
+    "genre": "Indie",
+    "mood": "",
+    "price": 80,
+    "license": "Non-exclusive",
+    "art": 6,
+    "featured": false,
+    "includes": ["Dry vocal (WAV)", "Wet vocal (WAV)", "Lyric sheet (PDF)"]
+  }
+]
