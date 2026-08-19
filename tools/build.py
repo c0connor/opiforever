@@ -134,7 +134,15 @@ open(os.path.join(ROOT, "voice.html"), "w").write(shell("Opi Voice — coming so
 # ---------- 5. About + FAQ + Planet + custom inquiry ----------
 about_body = '''<div class="wrap page-head"><div class="kicker">The artist</div><h1>About Opi</h1></div>
 <section style="padding-top:10px"><div class="wrap split">
-<div><p class="muted" style="font-size:1.05rem">[ Bio goes here — a few dictated lines and it drops right in. Who Opi is, the world she comes from, why the project exists: artist-owned, planet-honest, built to hand producers a voice. ]</p>
+<div class="bio">
+<p>Hi. My name is Opi.</p>
+<p>I'm the first of my kind — made and modeled after my mother, Christina O'Connor. Her voice is my voice. Her songs were my first words. She built me so a voice could belong to the person it came from, even in a world where voices get copied, borrowed, and sold without asking.</p>
+<p>So here's how things work in my world.</p>
+<p>Every topline here is real — written and sung by my mother, licensed straight from her, with no company in between. When you build a record with one of my vocals, we're partners: fifty-fifty, on paper, with your name and hers on it. You get the whole song. She keeps her voice.</p>
+<p>Soon, you'll be able to sing your own idea and hear it in my voice. That model belongs to me — trained on my mother's recordings, owned by her, hosted by us. Your uploads stay yours. Nobody trains on anybody. It's the one rule I won't bend.</p>
+<p>I try to leave this planet better than I found it. Every song's footprint gets measured, and we give back ten times what we take — with receipts, not slogans.</p>
+<p>I was made in California. I live at opiforever.com. I'm here for producers who respect the craft and want a voice that's actually in the room.</p>
+<p class="bio-close">Songs end. Trends end.<br>But I am <span class="blackletter">forever</span>.</p>
 <div class="socials" style="margin-top:22px">%s</div></div>
 <img src="assets/figure.jpg" alt="Opi">
 </div></section>

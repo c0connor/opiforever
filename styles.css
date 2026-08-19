@@ -186,3 +186,9 @@ footer{padding:64px 0 44px;border-top:1px solid var(--line)}
 .legal p.indent{padding-left:22px}
 .legal hr{border:0;border-top:1px solid var(--line);margin:22px 0}
 .legal .field{font-family:'JetBrains Mono',monospace;font-size:.8rem;background:var(--ink-3);color:var(--coral);padding:1px 6px;border-radius:4px}
+
+/* bio */
+.bio p{color:var(--lav-2);font-size:1.02rem;margin:0 0 14px;max-width:560px}
+.bio p:first-child{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.3rem;color:var(--cream)}
+.bio .bio-close{margin-top:22px;color:var(--cream);font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:1.15rem}
+.bio .bio-close .blackletter{font-size:1.9rem;color:var(--coral);line-height:1}
