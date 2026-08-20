@@ -23,7 +23,7 @@ def shell(title, body, depth=0, active="", nav=True, desc="Premium EDM toplines,
     p = "../" * depth
     navhtml = ""
     if nav:
-        links = [("vocals.html","Vocals","vocals"),("voice.html","Opi Voice","voice"),("about.html","About","about")]
+        links = [("vocals.html","Marketplace","vocals"),("voice.html","Opi Voice","voice"),("about.html","About","about")]
         li = "".join('<a href="%s%s"%s>%s</a>' % (p, h, ' class="active"' if key==active else "", t) for h,t,key in links)
         navhtml = ('<nav class="top"><div class="nav-inner"><a class="nav-logo blackletter" href="%sindex.html">Opi</a>'
                    '<div class="nav-links">%s<a class="btn" href="%svocals.html">Browse vocals</a></div></div></nav>') % (p, li, p)
@@ -40,10 +40,10 @@ def shell(title, body, depth=0, active="", nav=True, desc="Premium EDM toplines,
 # ---------- shared blocks ----------
 def card(t, depth=0):
     p = "../" * depth
-    return ('<div class="card"><div class="card-art art-%d"><button class="play" data-src="%sassets/previews/%s.m4a" data-title="%s"%s aria-label="Play preview">▶</button><div class="progress"><i></i></div></div>'
+    return ('<div class="card" data-lic="%s"><div class="card-art art-%d"><button class="play" data-src="%sassets/previews/%s.m4a" data-title="%s"%s aria-label="Play preview">▶</button><div class="progress"><i></i></div></div>'
             '<div class="card-body"><div class="card-title"><a href="%svocal/%s.html">%s</a></div><div class="card-meta"><span class="chip">%d BPM</span><span class="chip">%s</span><span class="chip">%s</span></div>'
             '<div class="card-foot"><span class="price">$%d</span><a class="lic" href="%svocal/%s.html" style="text-decoration:none">%s →</a></div></div></div>'
-            ) % (t["art"], p, t["slug"], esc(t["title"]), ' data-featured="1"' if t.get("featured") else "", p, t["slug"], esc(t["title"]), t["bpm"], esc(t["key"]), esc(t["genre"]), t["price"], p, t["slug"], t["license"])
+            ) % (t["license"].lower(), t["art"], p, t["slug"], esc(t["title"]), ' data-featured="1"' if t.get("featured") else "", p, t["slug"], esc(t["title"]), t["bpm"], esc(t["key"]), esc(t["genre"]), t["price"], p, t["slug"], t["license"])
 
 LADDER = '''<section id="pricing" style="padding-top:0"><div class="wrap"><div class="kicker">The ladder</div><h2>Ways to work with Opi</h2><p class="section-sub">From building blocks to one-of-one exclusives.</p>
 <div class="ladder">
@@ -73,9 +73,12 @@ index_body = '''<div class="intro">
 open(os.path.join(ROOT, "index.html"), "w").write(shell("Opi — Toplines from a world of her own", index_body, nav=False))
 
 # ---------- 2. vocals (marketplace) ----------
-vocals_body = ('<div class="wrap page-head"><div class="kicker">The catalog</div><h1>Non-exclusive vocals</h1>'
-    '<p>Every topline comes with the full acapella, dry &amp; wet stems, and the lyric sheet. Licensed under a real contract, signed at checkout — you build the record, we split it 50/50, and it releases as <em>feat.&nbsp;Opi</em>.</p></div>'
-    '<section style="padding-top:20px"><div class="wrap"><div class="grid">%s</div>'
+vocals_body = ('<div class="wrap page-head"><div class="kicker">The marketplace</div><h1>Vocal marketplace</h1>'
+    '<p>Toplines sung in the Opi voice — every one licensed under a real contract, signed at checkout. Soon, producers who write with <a href="voice.html" style="color:var(--coral)">Opi Voice</a> can sell their toplines here too.</p>'
+    '<div class="filter-bar"><button class="chip-btn active" data-filter="all">All</button><button class="chip-btn" data-filter="non-exclusive">Non-exclusive</button><button class="chip-btn" data-filter="exclusive">Exclusive</button>'
+    '<a class="sell-link" href="submit.html">Sell your Opi topline →</a></div></div>'
+    '<section style="padding-top:20px"><div class="wrap"><div class="grid" id="marketGrid">%s</div>'
+    '<div id="exclusiveEmpty" class="empty-state" hidden><h3>Exclusives are one-of-one.</h3><p class="muted">The first exclusive drops are being held for launch. Want a catalog vocal exclusively — or something made to order? <a href="about.html#custom" style="color:var(--coral)">Ask directly →</a></p></div>'
     '<p class="muted" style="margin-top:34px;font-size:.88rem">Previews are the full demo mix, tagged — so you hear exactly what you\'re getting. Purchases deliver the full untagged acapella and every stem.</p></div></section>'
     '<div class="stripes"></div>%s%s') % ("".join(card(t) for t in TRACKS), STEPS, LADDER)
 open(os.path.join(ROOT, "vocals.html"), "w").write(shell("Vocals — Opi", vocals_body, active="vocals"))
@@ -210,4 +213,52 @@ license_body = ('<div class="wrap page-head"><div class="kicker">The contract</d
     '<section style="padding-top:10px"><div class="wrap narrow legal">%s</div></section>') % md_to_html(open(LICENSE_MD).read())
 open(os.path.join(ROOT, "license.html"), "w").write(shell("License terms — Opi", license_body, active="about"))
 
-print("built: index.html, vocals.html, voice.html, about.html, vocal/*.html (%d), license.html" % len(TRACKS))
+
+# ---------- 7. Marketplace submission page (preview until Opi Voice launches) ----------
+submit_body = """<div class="wrap page-head"><div class="kicker">Sell on the marketplace</div><h1>Submit your Opi topline</h1>
+<p>Wrote a topline with <a href="voice.html" style="color:var(--coral)">Opi Voice</a>? List it here. You keep your publishing and set your own price — the marketplace takes 10% of each sale. Every submission is screened before it lists; every sale runs through a signed license.</p>
+<p class="mono" style="color:var(--coral);font-size:.85rem;margin-top:14px">SUBMISSIONS OPEN WHEN OPI VOICE LAUNCHES — THIS FORM IS A PREVIEW.</p></div>
+<section style="padding-top:16px"><div class="wrap narrow">
+<form data-placeholder="Preview mode — nothing was sent. Submissions open with Opi Voice." class="submit-form">
+<h3>The track</h3>
+<div class="form-grid">
+<label>Title<input class="field" type="text" placeholder="e.g. Midnight Run" required></label>
+<label>BPM<input class="field" type="number" placeholder="128" min="40" max="220" required></label>
+<label>Key<input class="field" type="text" placeholder="e.g. F minor" required></label>
+<label>Genre / mood<input class="field" type="text" placeholder="melodic house, euphoric" required></label>
+</div>
+<h3>Credits &amp; splits</h3>
+<div class="form-grid">
+<label>All songwriters<input class="field" type="text" placeholder="every writer, comma-separated" required></label>
+<label>Publishing you keep (%)<input class="field" type="number" placeholder="100" min="0" max="100" required></label>
+<label>Your PRO <span class="opt">(optional)</span><input class="field" type="text" placeholder="ASCAP / BMI / SOCAN…"></label>
+<label>Your IPI <span class="opt">(optional)</span><input class="field" type="text" placeholder="9–11 digits"></label>
+</div>
+<h3>Files</h3>
+<div class="form-grid">
+<label>Stems (WAV)<input class="field" type="file" multiple disabled></label>
+<label>Lyrics (PDF)<input class="field" type="file" disabled></label>
+</div>
+<p class="form-note">File uploads open at launch. Stems must be WAVs made with Opi Voice — each conversion carries an ID, and submissions are matched to a real session during screening.</p>
+<h3>The offer</h3>
+<div class="form-grid">
+<label>Your price (USD)<input class="field" type="number" placeholder="80" min="10" required></label>
+<label>License type<span class="radio-row"><label class="radio"><input type="radio" name="lictype" checked> Non-exclusive</label><label class="radio"><input type="radio" name="lictype"> Exclusive</label></span></label>
+</div>
+<h3>You</h3>
+<div class="form-grid">
+<label>Artist / writer name<input class="field" type="text" required></label>
+<label>Email<input class="field" type="email" required></label>
+</div>
+<label class="agree"><input type="checkbox" required> I understand submissions are screened, sales run under a signed license with a 10% marketplace fee, and the content standards (no hate, no deception, no political use of the voice) apply.</label>
+<div style="margin-top:20px"><button class="btn big" type="submit">Submit for screening</button></div>
+</form>
+<div class="pledges" style="margin-top:56px">
+<div class="pledge"><div class="ico">🖋️</div><h3>You keep your publishing</h3><p>You wrote it — the writing stays yours. Your splits go in the buyer's contract exactly as you set them here.</p></div>
+<div class="pledge"><div class="ico">💰</div><h3>You set the price</h3><p>Your vocal, your number. The marketplace takes 10% per sale; the rest is yours.</p></div>
+<div class="pledge"><div class="ico">🔍</div><h3>Everything is screened</h3><p>Quality and content standards protect every seller here. Nothing lists without approval.</p></div>
+</div>
+</div></section>"""
+open(os.path.join(ROOT, "submit.html"), "w").write(shell("Sell your Opi topline", submit_body, active="vocals"))
+
+print("built: index.html, vocals.html, voice.html, about.html, vocal/*.html (%d), license.html, submit.html" % len(TRACKS))

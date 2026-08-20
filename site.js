@@ -98,3 +98,18 @@
     });
   });
 })();
+
+/* ---------- 4. Marketplace license filter ---------- */
+(function(){
+  var chips=document.querySelectorAll('.chip-btn[data-filter]');
+  if(!chips.length) return;
+  chips.forEach(function(c){ c.addEventListener('click',function(){
+    chips.forEach(function(x){x.classList.remove('active')}); c.classList.add('active');
+    var f=c.getAttribute('data-filter'), any=false;
+    document.querySelectorAll('#marketGrid .card').forEach(function(card){
+      var show=(f==='all')||card.getAttribute('data-lic')===f;
+      card.style.display=show?'':'none'; if(show) any=true;
+    });
+    var empty=document.getElementById('exclusiveEmpty'); if(empty) empty.hidden=any;
+  });});
+})();

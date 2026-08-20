@@ -192,3 +192,24 @@ footer{padding:64px 0 44px;border-top:1px solid var(--line)}
 .bio p:first-child{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.3rem;color:var(--cream)}
 .bio .bio-close{margin-top:22px;color:var(--cream);font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:1.15rem}
 .bio .bio-close .blackletter{font-size:1.9rem;color:var(--coral);line-height:1}
+
+/* marketplace filter + submit form */
+.filter-bar{display:flex;gap:10px;align-items:center;margin-top:24px;flex-wrap:wrap}
+.chip-btn{background:transparent;border:1.5px solid rgba(168,164,206,.35);color:var(--lav);border-radius:999px;padding:8px 18px;font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:.88rem;cursor:pointer;transition:all .2s}
+.chip-btn:hover{color:var(--cream);border-color:var(--cream)}
+.chip-btn.active{background:var(--coral);border-color:var(--coral);color:var(--ink);font-weight:700}
+.sell-link{margin-left:auto;color:var(--coral);text-decoration:none;font-size:.9rem;font-weight:600}
+.sell-link:hover{text-decoration:underline}
+.empty-state{background:var(--ink-2);border:1px solid var(--line);border-radius:18px;padding:40px;text-align:center;margin-top:8px}
+.submit-form h3{margin:30px 0 12px;font-size:1.05rem;color:var(--cream)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid label{display:flex;flex-direction:column;gap:6px;font-size:.85rem;color:var(--lav);font-weight:500}
+.form-grid .field{min-width:0;width:100%}
+.form-grid input[type=file]{padding:11px 18px;cursor:not-allowed;opacity:.6}
+.opt{color:#7c78a3;font-weight:400}
+.radio-row{display:flex;gap:18px;align-items:center;background:var(--ink-2);border:1.5px solid rgba(168,164,206,.3);border-radius:999px;padding:12px 22px}
+.radio{display:flex;gap:8px;align-items:center;color:var(--lav-2);font-size:.92rem;cursor:pointer}
+.radio input{accent-color:var(--coral)}
+.agree{display:flex;gap:12px;align-items:flex-start;margin-top:26px;color:var(--lav);font-size:.88rem;cursor:pointer}
+.agree input{margin-top:4px;accent-color:var(--coral)}
+@media (max-width:680px){.form-grid{grid-template-columns:1fr}.sell-link{margin-left:0}}
