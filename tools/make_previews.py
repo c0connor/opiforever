@@ -14,7 +14,7 @@ Run:  python3 tools/make_previews.py
 """
 import audioop, os, subprocess, sys, wave, tempfile
 
-VOCALS = "/Users/christinaoconnor/Documents/CC/Opi/2 - Vocals"
+VOCALS = "/Users/christinaoconnor/Documents/Documents - Christina’s MacBook Air/CC/Opi/2 - Vocals"
 OUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "previews")
 CLIP_SEC = None      # None = whole song
 TAG_EVERY = 12       # seconds between tags
