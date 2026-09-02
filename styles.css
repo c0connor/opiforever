@@ -229,3 +229,11 @@ footer{padding:64px 0 44px;border-top:1px solid var(--line)}
 .vtool-tips{font-size:.85rem;margin-top:18px;text-align:center}
 
 [hidden]{display:none!important}
+
+/* pro knobs */
+.vtool-knobs{background:var(--ink-3);border-radius:14px;padding:20px 22px;margin-bottom:22px;display:grid;gap:16px}
+.knob{display:block;font-size:.85rem;color:var(--lav-2);font-weight:600}
+.knob .kv{color:var(--coral);font-family:'JetBrains Mono',monospace;margin-left:6px}
+.knob input[type=range]{width:100%;margin:6px 0 2px;accent-color:var(--coral)}
+.knob small{display:block;color:#7c78a3;font-weight:400}
+.vmode{cursor:pointer}

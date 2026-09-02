@@ -126,6 +126,26 @@
   var inviteEl=document.getElementById('vtInvite');
   try{ if(inviteEl && localStorage.getItem('opi-invite')) inviteEl.value=localStorage.getItem('opi-invite'); }catch(e){}
   var mr=null, chunks=[], t0=0, tick=null;
+  // Pro mode
+  var proBtn=document.getElementById('vmPro'), simpleBtn=document.getElementById('vmSimple'), knobs=document.getElementById('vtKnobs');
+  function knobEls(){ return {pitch:document.getElementById('kPitch'),index:document.getElementById('kIndex'),protect:document.getElementById('kProtect'),vol:document.getElementById('kVol')}; }
+  if(proBtn){
+    proBtn.addEventListener('click',function(){ knobs.hidden=false; proBtn.classList.add('active'); simpleBtn.classList.remove('active'); });
+    simpleBtn.addEventListener('click',function(){ knobs.hidden=true; simpleBtn.classList.add('active'); proBtn.classList.remove('active'); });
+    [['kPitch','kvPitch'],['kIndex','kvIndex'],['kProtect','kvProtect'],['kVol','kvVol']].forEach(function(pair){
+      var i=document.getElementById(pair[0]), o=document.getElementById(pair[1]);
+      i.addEventListener('input',function(){ o.textContent=i.value; });
+    });
+    document.getElementById('kReset').addEventListener('click',function(){
+      var e=knobEls(); e.pitch.value=0; e.index.value=0.75; e.protect.value=0.33; e.vol.value=1;
+      ['kPitch','kIndex','kProtect','kVol'].forEach(function(id){ document.getElementById(id).dispatchEvent(new Event('input')); });
+    });
+  }
+  function knobPayload(){
+    if(!knobs||knobs.hidden) return {};
+    var e=knobEls();
+    return {pitch:parseInt(e.pitch.value,10), index_rate:parseFloat(e.index.value), protect:parseFloat(e.protect.value), volume_envelope:parseFloat(e.vol.value)};
+  }
   var current={blob:null, format:'wav'};
   function show(el){[idle,rec,got].forEach(function(x){x.hidden=(x!==el)});}
   function fmt(s){return Math.floor(s/60)+':'+('0'+Math.floor(s%60)).slice(-2);}
@@ -167,7 +187,7 @@
     var submit=function(payload){
       setStatus('Sending to the engine…');
       return fetch(API+'/convert',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(Object.assign({format:current.format,invite:invite},payload))});
+        body:JSON.stringify(Object.assign({format:current.format,invite:invite},knobPayload(),payload))});
     };
     var start;
     if(current.blob.size>6*1024*1024){

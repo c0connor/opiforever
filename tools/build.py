@@ -114,7 +114,22 @@ voice_body = """<div class="wrap page-head"><div class="kicker">The voice, live<
 <p class="mono" style="color:var(--coral);font-size:.85rem;margin-top:14px">PRIVATE BETA — LIVE CONVERSIONS. NO INVITE CODE = 15-SECOND TRIAL.</p></div>
 <section style="padding-top:16px"><div class="wrap narrow">
 <div class="vtool">
-  <div class="vtool-modes"><span class="vmode active">Simple</span><span class="vmode dim" title="Coming with the full studio">Pro</span></div>
+  <div class="vtool-modes"><span class="vmode active" id="vmSimple">Simple</span><span class="vmode" id="vmPro">Pro</span></div>
+  <div class="vtool-knobs" id="vtKnobs" hidden>
+    <label class="knob">Pitch shift <span class="kv" id="kvPitch">0</span> st
+      <input type="range" id="kPitch" min="-24" max="24" step="1" value="0">
+      <small>singing low? +12 lifts a male take into Opi\'s range</small></label>
+    <label class="knob">Opi-ness <span class="kv" id="kvIndex">0.75</span>
+      <input type="range" id="kIndex" min="0" max="1" step="0.05" value="0.75">
+      <small>higher = more of Opi\'s texture · very high can add artifacts</small></label>
+    <label class="knob">Consonant protection <span class="kv" id="kvProtect">0.33</span>
+      <input type="range" id="kProtect" min="0" max="0.5" step="0.01" value="0.33">
+      <small>lower = more conversion character on breaths &amp; consonants</small></label>
+    <label class="knob">Follow your dynamics <span class="kv" id="kvVol">1.0</span>
+      <input type="range" id="kVol" min="0" max="1" step="0.05" value="1">
+      <small>1 = mirror the input\'s volume shape exactly</small></label>
+    <button class="btn ghost" id="kReset" type="button" style="padding:8px 18px;font-size:.85rem">Reset to defaults</button>
+  </div>
   <div class="vtool-stage" id="vtStage">
     <div class="vtool-idle" id="vtIdle">
       <button class="btn big" id="vtRecord">🎤 Record</button>
