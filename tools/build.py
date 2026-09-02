@@ -111,7 +111,7 @@ for t in TRACKS:
 
 # ---------- 4. Opi Voice ----------
 voice_body = """<div class="wrap page-head"><div class="kicker">The voice, live</div><h1>Opi Voice</h1><p>Sing your idea. Hear it in my voice. Record right here or drop in a take — tuned vocals convert best.</p>
-<p class="mono" style="color:var(--coral);font-size:.85rem;margin-top:14px">PRIVATE BETA SHELL — THE CONVERSION ENGINE CONNECTS FOR BETA TESTERS SOON.</p></div>
+<p class="mono" style="color:var(--coral);font-size:.85rem;margin-top:14px">PRIVATE BETA — LIVE CONVERSIONS. NO INVITE CODE = 15-SECOND TRIAL.</p></div>
 <section style="padding-top:16px"><div class="wrap narrow">
 <div class="vtool">
   <div class="vtool-modes"><span class="vmode active">Simple</span><span class="vmode dim" title="Coming with the full studio">Pro</span></div>
@@ -131,13 +131,19 @@ voice_body = """<div class="wrap page-head"><div class="kicker">The voice, live<
         <button class="btn big" id="vtConvert">Convert to Opi ✨</button>
         <button class="btn ghost" id="vtReset">Start over</button>
       </div>
+      <div class="vtool-invite"><input class="field" id="vtInvite" type="text" placeholder="beta invite code (optional — no code = 15-sec trial)" style="border-radius:12px;width:100%;margin-top:14px"></div>
       <div class="vtool-notice" id="vtNotice" hidden>
-        <strong>Almost — the engine room is being connected.</strong>
-        <p class="muted" style="margin-top:6px;font-size:.92rem">Your clip stays on this device (nothing uploaded). Conversion opens for invited beta testers when the model goes live — you\'ll hear this exact take sung back in Opi\'s voice. <a href="#waitlist" style="color:var(--coral)">Get on the list ↓</a></p>
+        <div id="vtStatus" class="mono" style="font-size:.9rem"></div>
+        <div id="vtResult" hidden style="margin-top:14px">
+          <div class="kicker" style="margin-bottom:8px">Opi\'s version</div>
+          <audio controls id="vtOut" style="width:100%"></audio>
+          <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap"><a class="btn" id="vtDownload" download="opi-conversion.wav">Download</a></div>
+          <div class="form-note" id="vtEco" style="margin-top:10px"></div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="form-note" style="margin-top:14px">🔒 The pact applies here: your audio is never stored, never trained on. In this preview, clips never even leave your device.</div>
+  <div class="form-note" style="margin-top:14px">🔒 The pact applies here: your audio is converted on an ephemeral renewable-powered server and deleted before the reply reaches you. Never stored, never trained on.</div>
 </div>
 <div class="vtool-tips muted">Tips for the best conversion: dry vocal (no reverb) · tune it first · one voice at a time · headphones stop mic bleed.</div>
 </div></section>

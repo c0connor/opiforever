@@ -114,30 +114,35 @@
   });});
 })();
 
-/* ---------- 5. Opi Voice beta shell (mic record + upload, all local) ---------- */
+/* ---------- 5. Opi Voice — live conversion (mic/upload -> api.opiforever.com) ---------- */
 (function(){
   var recBtn=document.getElementById('vtRecord');
   if(!recBtn) return;
+  var API='https://api.opiforever.com';
   var idle=document.getElementById('vtIdle'), rec=document.getElementById('vtRec'), got=document.getElementById('vtGot');
   var timerEl=document.getElementById('vtTimer'), player=document.getElementById('vtPlayer'), nameEl=document.getElementById('vtName');
-  var notice=document.getElementById('vtNotice');
-  var mr=null, chunks=[], t0=0, tick=null, stream=null;
+  var notice=document.getElementById('vtNotice'), statusEl=document.getElementById('vtStatus');
+  var resultEl=document.getElementById('vtResult'), outEl=document.getElementById('vtOut'), dlEl=document.getElementById('vtDownload'), ecoEl=document.getElementById('vtEco');
+  var inviteEl=document.getElementById('vtInvite');
+  try{ if(inviteEl && localStorage.getItem('opi-invite')) inviteEl.value=localStorage.getItem('opi-invite'); }catch(e){}
+  var mr=null, chunks=[], t0=0, tick=null;
+  var current={blob:null, format:'wav'};
   function show(el){[idle,rec,got].forEach(function(x){x.hidden=(x!==el)});}
   function fmt(s){return Math.floor(s/60)+':'+('0'+Math.floor(s%60)).slice(-2);}
+  function setStatus(t){ notice.hidden=false; statusEl.textContent=t; }
   recBtn.addEventListener('click',function(){
     navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false}}).then(function(st){
-      stream=st; chunks=[];
-      mr=new MediaRecorder(st);
+      chunks=[]; mr=new MediaRecorder(st);
       mr.ondataavailable=function(e){if(e.data.size)chunks.push(e.data);};
       mr.onstop=function(){
         var blob=new Blob(chunks,{type:mr.mimeType||'audio/webm'});
+        current={blob:blob, format:(mr.mimeType||'').indexOf('ogg')>=0?'ogg':'webm'};
         player.src=URL.createObjectURL(blob);
-        nameEl.textContent='Your take · '+fmt((Date.now()-t0)/1000)+' · recorded here, never uploaded';
-        show(got); notice.hidden=true;
+        nameEl.textContent='Your take · '+fmt((Date.now()-t0)/1000);
+        show(got); notice.hidden=true; resultEl.hidden=true;
         st.getTracks().forEach(function(tr){tr.stop();});
       };
-      mr.start(); t0=Date.now();
-      timerEl.textContent='0:00';
+      mr.start(); t0=Date.now(); timerEl.textContent='0:00';
       tick=setInterval(function(){timerEl.textContent=fmt((Date.now()-t0)/1000);},250);
       show(rec);
     }).catch(function(){ alert('Mic access was blocked — allow the microphone in your browser, or upload a file instead.'); });
@@ -145,10 +150,50 @@
   document.getElementById('vtStop').addEventListener('click',function(){ clearInterval(tick); if(mr&&mr.state!=='inactive')mr.stop(); });
   document.getElementById('vtFile').addEventListener('change',function(e){
     var f=e.target.files[0]; if(!f)return;
+    var ext=(f.name.split('.').pop()||'wav').toLowerCase();
+    current={blob:f, format:['wav','mp3','flac','m4a','ogg','webm'].indexOf(ext)>=0?ext:'wav'};
     player.src=URL.createObjectURL(f);
-    nameEl.textContent=f.name+' · loaded locally, never uploaded';
-    show(got); notice.hidden=true;
+    nameEl.textContent=f.name;
+    show(got); notice.hidden=true; resultEl.hidden=true;
   });
-  document.getElementById('vtConvert').addEventListener('click',function(){ notice.hidden=false; notice.scrollIntoView({behavior:'smooth',block:'nearest'}); });
   document.getElementById('vtReset').addEventListener('click',function(){ player.removeAttribute('src'); show(idle); notice.hidden=true; });
+
+  document.getElementById('vtConvert').addEventListener('click',function(){
+    if(!current.blob){ setStatus('Record or upload a vocal first.'); return; }
+    if(current.blob.size>7*1024*1024){ setStatus('That file is over 7 MB — trim the clip or use an MP3. Mic recordings are always fine.'); return; }
+    var invite=(inviteEl&&inviteEl.value||'').trim();
+    try{ if(invite) localStorage.setItem('opi-invite',invite); }catch(e){}
+    resultEl.hidden=true; setStatus('Reading your audio…');
+    var fr=new FileReader();
+    fr.onload=function(){
+      var b64=String(fr.result).split(',')[1];
+      setStatus('Sending to the engine…');
+      fetch(API+'/convert',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({audio_b64:b64,format:current.format,invite:invite})})
+      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+      .then(function(res){
+        if(!res.ok||!res.j.job){ setStatus('The engine said no: '+(res.j.hint||res.j.error||'unknown error')); return; }
+        var trialNote=res.j.trial?' (15-sec trial — add an invite code for full length)':'';
+        var started=Date.now(), poll=function(){
+          fetch(API+'/convert/'+res.j.job).then(function(r){return r.json();}).then(function(d){
+            if(d.status==='COMPLETED'&&d.audio_b64){
+              var src='data:audio/wav;base64,'+d.audio_b64;
+              outEl.src=src; dlEl.href=src;
+              statusEl.textContent='Done'+trialNote+' ✨';
+              ecoEl.textContent='🌱 '+(d.eco||''); resultEl.hidden=false;
+            } else if(d.status==='FAILED'||d.status==='CANCELLED'||d.status==='TIMED_OUT'){
+              setStatus('Conversion '+d.status.toLowerCase()+' — try again in a minute.');
+            } else {
+              var el=Math.round((Date.now()-started)/1000);
+              setStatus(el<25?('In queue'+trialNote+' — a worker is waking up…'):(el<180?'Opi is singing… ('+el+'s)':'Still working… first wake of the day can take a few minutes ('+el+'s)'));
+              setTimeout(poll,3000);
+            }
+          }).catch(function(){ setTimeout(poll,5000); });
+        };
+        poll();
+      })
+      .catch(function(){ setStatus('Couldn\u2019t reach the engine — it may not be connected yet. Try again soon.'); });
+    };
+    fr.readAsDataURL(current.blob);
+  });
 })();
