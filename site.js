@@ -191,11 +191,20 @@
         var trialNote=res.j.trial?' (15-sec trial — add an invite code for full length)':'';
         var started=Date.now(), poll=function(){
           fetch(API+'/convert/'+res.j.job).then(function(r){return r.json();}).then(function(d){
-            if(d.status==='COMPLETED'&&d.audio_b64){
-              var src='data:audio/wav;base64,'+d.audio_b64;
-              outEl.src=src; dlEl.href=src;
-              statusEl.textContent='Done'+trialNote+' ✨';
-              ecoEl.textContent='🌱 '+(d.eco||''); resultEl.hidden=false;
+            if(d.status==='COMPLETED'&&(d.audio_b64||d.result_url)){
+              var finish=function(src){
+                outEl.src=src; dlEl.href=src;
+                statusEl.textContent='Done'+trialNote+' ✨';
+                ecoEl.textContent='🌱 '+(d.eco||''); resultEl.hidden=false;
+              };
+              if(d.audio_b64){ finish('data:audio/wav;base64,'+d.audio_b64); }
+              else {
+                setStatus('Downloading your conversion…');
+                fetch(API+d.result_url).then(function(r){ if(!r.ok) throw 0; return r.blob(); }).then(function(b){
+                  finish(URL.createObjectURL(b));
+                  fetch(API+d.result_url,{method:'DELETE'}).catch(function(){});
+                }).catch(function(){ setStatus('Conversion finished but the download failed — try Convert again.'); });
+              }
             } else if(d.status==='FAILED'||d.status==='CANCELLED'||d.status==='TIMED_OUT'){
               setStatus('Conversion '+d.status.toLowerCase()+' — try again in a minute.');
             } else {
