@@ -189,8 +189,10 @@
       .then(function(res){
         if(!res.ok||!res.j.job){ setStatus('The engine said no: '+(res.j.hint||res.j.error||'unknown error')); return; }
         var trialNote=res.j.trial?' (15-sec trial — add an invite code for full length)':'';
-        var started=Date.now(), poll=function(){
+        var started=Date.now(), misses=0, poll=function(){
           fetch(API+'/convert/'+res.j.job).then(function(r){return r.json();}).then(function(d){
+            if(d&&d.error){ misses++; if(misses>=5){ setStatus('The engine lost track of this job (it happens if the studio reshuffles mid-song) — press Convert again, it\u2019s warm now.'); return; } setTimeout(poll,4000); return; }
+            misses=0;
             if(d.status==='COMPLETED'&&(d.audio_b64||d.result_url)){
               var finish=function(src){
                 outEl.src=src; dlEl.href=src;
