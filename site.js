@@ -160,16 +160,31 @@
 
   document.getElementById('vtConvert').addEventListener('click',function(){
     if(!current.blob){ setStatus('Record or upload a vocal first.'); return; }
-    if(current.blob.size>7*1024*1024){ setStatus('That file is over 7 MB — trim the clip or use an MP3. Mic recordings are always fine.'); return; }
+    if(current.blob.size>100*1024*1024){ setStatus('That file is over 100 MB — export a trimmed version and try again.'); return; }
     var invite=(inviteEl&&inviteEl.value||'').trim();
     try{ if(invite) localStorage.setItem('opi-invite',invite); }catch(e){}
-    resultEl.hidden=true; setStatus('Reading your audio…');
-    var fr=new FileReader();
-    fr.onload=function(){
-      var b64=String(fr.result).split(',')[1];
+    resultEl.hidden=true;
+    var submit=function(payload){
       setStatus('Sending to the engine…');
-      fetch(API+'/convert',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({audio_b64:b64,format:current.format,invite:invite})})
+      return fetch(API+'/convert',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(Object.assign({format:current.format,invite:invite},payload))});
+    };
+    var start;
+    if(current.blob.size>6*1024*1024){
+      var mb=Math.round(current.blob.size/1048576);
+      setStatus('Uploading your file ('+mb+' MB) to the vault…');
+      start=fetch(API+'/upload',{method:'POST',headers:{'Content-Type':'application/octet-stream','X-Audio-Format':current.format},body:current.blob})
+        .then(function(r){return r.json();})
+        .then(function(u){ if(!u.upload_id) throw new Error(u.hint||u.error||'upload failed'); return submit({upload_id:u.upload_id}); });
+    } else {
+      setStatus('Reading your audio…');
+      start=new Promise(function(res,rej){
+        var fr=new FileReader();
+        fr.onload=function(){res(String(fr.result).split(',')[1]);};
+        fr.onerror=rej; fr.readAsDataURL(current.blob);
+      }).then(function(b64){ return submit({audio_b64:b64}); });
+    }
+    start
       .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
       .then(function(res){
         if(!res.ok||!res.j.job){ setStatus('The engine said no: '+(res.j.hint||res.j.error||'unknown error')); return; }
@@ -192,8 +207,6 @@
         };
         poll();
       })
-      .catch(function(){ setStatus('Couldn\u2019t reach the engine — it may not be connected yet. Try again soon.'); });
-    };
-    fr.readAsDataURL(current.blob);
+      .catch(function(e){ setStatus('Couldn\u2019t reach the engine: '+(e&&e.message||'try again soon.')); });
   });
 })();
