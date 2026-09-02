@@ -213,3 +213,19 @@ footer{padding:64px 0 44px;border-top:1px solid var(--line)}
 .agree{display:flex;gap:12px;align-items:flex-start;margin-top:26px;color:var(--lav);font-size:.88rem;cursor:pointer}
 .agree input{margin-top:4px;accent-color:var(--coral)}
 @media (max-width:680px){.form-grid{grid-template-columns:1fr}.sell-link{margin-left:0}}
+
+/* voice tool */
+.vtool{background:var(--ink-2);border:1px solid var(--line);border-radius:22px;padding:34px;position:relative}
+.vtool-modes{display:flex;gap:8px;margin-bottom:24px}
+.vmode{font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:999px;border:1px solid var(--line);color:var(--lav)}
+.vmode.active{background:var(--coral);border-color:var(--coral);color:var(--ink);font-weight:700}
+.vmode.dim{opacity:.5}
+.vtool-idle{display:flex;gap:14px;flex-wrap:wrap}
+.vtool-rec{display:flex;align-items:center;gap:16px}
+.rec-dot{width:16px;height:16px;border-radius:50%;background:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+#vtTimer{font-size:1.3rem;color:var(--cream)}
+.vtool-notice{margin-top:18px;background:var(--ink-3);border:1px solid rgba(242,107,79,.4);border-radius:14px;padding:18px 20px}
+.vtool-tips{font-size:.85rem;margin-top:18px;text-align:center}
+
+[hidden]{display:none!important}

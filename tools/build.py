@@ -110,28 +110,58 @@ for t in TRACKS:
     open(os.path.join(ROOT, "vocal", t["slug"] + ".html"), "w").write(shell("%s — Opi" % t["title"], body, depth=1, active="vocals"))
 
 # ---------- 4. Opi Voice ----------
-voice_body = '''<div class="wrap page-head"><div class="kicker">Coming to this universe</div><h1>Opi Voice</h1><p>Sing your idea. Hear it in my voice.</p></div>
-<section style="padding-top:10px"><div class="wrap split">
+voice_body = """<div class="wrap page-head"><div class="kicker">The voice, live</div><h1>Opi Voice</h1><p>Sing your idea. Hear it in my voice. Record right here or drop in a take — tuned vocals convert best.</p>
+<p class="mono" style="color:var(--coral);font-size:.85rem;margin-top:14px">PRIVATE BETA SHELL — THE CONVERSION ENGINE CONNECTS FOR BETA TESTERS SOON.</p></div>
+<section style="padding-top:16px"><div class="wrap narrow">
+<div class="vtool">
+  <div class="vtool-modes"><span class="vmode active">Simple</span><span class="vmode dim" title="Coming with the full studio">Pro</span></div>
+  <div class="vtool-stage" id="vtStage">
+    <div class="vtool-idle" id="vtIdle">
+      <button class="btn big" id="vtRecord">🎤 Record</button>
+      <label class="btn big ghost" style="cursor:pointer">📁 Upload a vocal<input type="file" id="vtFile" accept="audio/*" hidden></label>
+    </div>
+    <div class="vtool-rec" id="vtRec" hidden>
+      <div class="rec-dot"></div><span id="vtTimer" class="mono">0:00</span>
+      <button class="btn" id="vtStop">■ Stop</button>
+    </div>
+    <div class="vtool-got" id="vtGot" hidden>
+      <div class="muted" id="vtName" style="margin-bottom:10px"></div>
+      <audio controls id="vtPlayer" style="width:100%"></audio>
+      <div class="row" style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn big" id="vtConvert">Convert to Opi ✨</button>
+        <button class="btn ghost" id="vtReset">Start over</button>
+      </div>
+      <div class="vtool-notice" id="vtNotice" hidden>
+        <strong>Almost — the engine room is being connected.</strong>
+        <p class="muted" style="margin-top:6px;font-size:.92rem">Your clip stays on this device (nothing uploaded). Conversion opens for invited beta testers when the model goes live — you\'ll hear this exact take sung back in Opi\'s voice. <a href="#waitlist" style="color:var(--coral)">Get on the list ↓</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="form-note" style="margin-top:14px">🔒 The pact applies here: your audio is never stored, never trained on. In this preview, clips never even leave your device.</div>
+</div>
+<div class="vtool-tips muted">Tips for the best conversion: dry vocal (no reverb) · tune it first · one voice at a time · headphones stop mic bleed.</div>
+</div></section>
+<div class="stripes"></div>
+<section id="waitlist"><div class="wrap split">
 <img src="assets/voice.jpg" alt="Opi Voice">
 <div><h2 style="font-size:1.7rem">The official, artist-owned Opi vocal model.</h2>
-<p class="muted">Record your topline — in the browser or from your DAW — convert it to my voice, and release it: licensed, credited, and split fairly. Not a company renting my voice out. Me, handing you the mic.</p>
-<p class="muted" style="margin-top:12px">Simple mode for your first song. Pro mode when you want the knobs.</p>
-<form class="inline-form" data-placeholder="Thanks — you're on the list. (Preview mode: sign-ups aren't saved yet.)"><input type="email" required placeholder="your@email.com" aria-label="email"><button class="btn" type="submit">Join the waitlist</button></form>
-<div class="form-note">No spam. One email when it opens.</div>
+<p class="muted">Trained on my mother\'s recordings, owned by her, hosted by us — not a company renting my voice out. Me, handing you the mic.</p>
+<form class="inline-form" data-placeholder="Thanks — you\'re on the list. (Preview mode: sign-ups aren\'t saved yet.)"><input type="email" required placeholder="your@email.com" aria-label="email"><button class="btn" type="submit">Join the beta waitlist</button></form>
+<div class="form-note">No spam. One email when your invite is ready.</div>
 </div></div></section>
-<div class="stripes"></div>
-<section><div class="wrap"><div class="kicker">The pact</div><h2>Three promises, in writing.</h2><p class="section-sub">Artist-owned AI means the rules are the artist's — and they cut both ways.</p>
+<section style="padding-top:0"><div class="wrap"><div class="kicker">The pact</div><h2>Three promises, in writing.</h2><p class="section-sub">Artist-owned AI means the rules are the artist\'s — and they cut both ways.</p>
 <div class="pledges">
 <div class="pledge"><div class="ico">🎤</div><h3>I own my voice</h3><p>The model is trained on my recordings, owned by me, and hosted by me. Nobody licenses my voice out from under me — and it never leaves the server.</p></div>
 <div class="pledge"><div class="ico">🔒</div><h3>Your uploads are yours</h3><p>Anything you record or upload is processed, delivered, and deleted. Never used to train, tune, or improve any model. Not analyzed. Not shared.</p></div>
-<div class="pledge"><div class="ico">🤝</div><h3>Nobody trains on anybody</h3><p>You don't train on my outputs; I don't train on your inputs. Written into the terms, and built into the code — deleted data can't be trained on.</p></div>
+<div class="pledge"><div class="ico">🤝</div><h3>Nobody trains on anybody</h3><p>You don\'t train on my outputs; I don\'t train on your inputs. Written into the terms, and built into the code — deleted data can\'t be trained on.</p></div>
 </div></div></section>
-<section style="padding-top:0"><div class="wrap narrow faq"><div class="kicker">Questions</div><h2 style="font-size:1.8rem">How it'll work</h2>
+<section style="padding-top:0"><div class="wrap narrow faq"><div class="kicker">Questions</div><h2 style="font-size:1.8rem">How it works</h2>
 <details><summary>What do I actually do?</summary><p>Sing or upload your own topline. (Tip: tune it first — a tuned input sounds dramatically better.) The model converts the timbre to my voice. You get the converted vocal back to drop into your session.</p></details>
-<details><summary>What does it cost?</summary><p>A short free trial, then pay per song or a monthly pass — pricing is being finalized. It won't be the cheapest voice tool. It'll be the one where the artist is actually in the room.</p></details>
-<details><summary>Can I release songs made with it?</summary><p>Yes — you register the release through Opi, sign the split (my share is on the master, since it's my voice; the writing is yours), and it goes out credited <em>feat. Opi</em>. Registered releases get the Opi Verified mark.</p></details>
-<details><summary>Are there content rules?</summary><p>Yes. No hate, no obscenity, no deceptive impersonation, no political endorsements — it's my voice, and I keep the right to say no.</p></details>
-</div></section>'''
+<details><summary>Can I send it a MIDI file or play my keyboard into it?</summary><p>Not yet — that\'s a different kind of magic (singing a score from scratch, rather than converting a performance), and it\'s on the roadmap as its own chapter. Today the model needs a sung input: your voice in, my voice out.</p></details>
+<details><summary>What does it cost?</summary><p>A short free trial, then pay per song or a monthly pass — pricing is being finalized. It won\'t be the cheapest voice tool. It\'ll be the one where the artist is actually in the room.</p></details>
+<details><summary>Can I release songs made with it?</summary><p>Yes — you register the release through Opi, sign the split (my share is on the master, since it\'s my voice; the writing is yours), and it goes out credited <em>feat. Opi</em>. Registered releases get the Opi Verified mark.</p></details>
+<details><summary>Are there content rules?</summary><p>Yes. No hate, no obscenity, no deceptive impersonation, no political endorsements — it\'s my voice, and I keep the right to say no.</p></details>
+</div></section>"""
 open(os.path.join(ROOT, "voice.html"), "w").write(shell("Opi Voice — coming soon", voice_body, active="voice"))
 
 # ---------- 5. About + FAQ + Planet + custom inquiry ----------
@@ -188,7 +218,7 @@ open(os.path.join(ROOT, "about.html"), "w").write(shell("About Opi", about_body,
 
 
 # ---------- 6. Full license page (rendered from the master draft in Opi/4 - Contracts) ----------
-LICENSE_MD = "/Users/christinaoconnor/Documents/CC/Opi/4 - Contracts/OPI Non-Exclusive Vocal License v1.0 DRAFT.md"
+LICENSE_MD = "/Users/christinaoconnor/Documents/Documents - Christina’s MacBook Air/CC/Opi/4 - Contracts/OPI Non-Exclusive Vocal License v1.0 DRAFT.md"
 def md_to_html(md):
     out=[]; in_ul=False
     for raw in md.splitlines():

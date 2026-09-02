@@ -113,3 +113,42 @@
     var empty=document.getElementById('exclusiveEmpty'); if(empty) empty.hidden=any;
   });});
 })();
+
+/* ---------- 5. Opi Voice beta shell (mic record + upload, all local) ---------- */
+(function(){
+  var recBtn=document.getElementById('vtRecord');
+  if(!recBtn) return;
+  var idle=document.getElementById('vtIdle'), rec=document.getElementById('vtRec'), got=document.getElementById('vtGot');
+  var timerEl=document.getElementById('vtTimer'), player=document.getElementById('vtPlayer'), nameEl=document.getElementById('vtName');
+  var notice=document.getElementById('vtNotice');
+  var mr=null, chunks=[], t0=0, tick=null, stream=null;
+  function show(el){[idle,rec,got].forEach(function(x){x.hidden=(x!==el)});}
+  function fmt(s){return Math.floor(s/60)+':'+('0'+Math.floor(s%60)).slice(-2);}
+  recBtn.addEventListener('click',function(){
+    navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false}}).then(function(st){
+      stream=st; chunks=[];
+      mr=new MediaRecorder(st);
+      mr.ondataavailable=function(e){if(e.data.size)chunks.push(e.data);};
+      mr.onstop=function(){
+        var blob=new Blob(chunks,{type:mr.mimeType||'audio/webm'});
+        player.src=URL.createObjectURL(blob);
+        nameEl.textContent='Your take · '+fmt((Date.now()-t0)/1000)+' · recorded here, never uploaded';
+        show(got); notice.hidden=true;
+        st.getTracks().forEach(function(tr){tr.stop();});
+      };
+      mr.start(); t0=Date.now();
+      timerEl.textContent='0:00';
+      tick=setInterval(function(){timerEl.textContent=fmt((Date.now()-t0)/1000);},250);
+      show(rec);
+    }).catch(function(){ alert('Mic access was blocked — allow the microphone in your browser, or upload a file instead.'); });
+  });
+  document.getElementById('vtStop').addEventListener('click',function(){ clearInterval(tick); if(mr&&mr.state!=='inactive')mr.stop(); });
+  document.getElementById('vtFile').addEventListener('change',function(e){
+    var f=e.target.files[0]; if(!f)return;
+    player.src=URL.createObjectURL(f);
+    nameEl.textContent=f.name+' · loaded locally, never uploaded';
+    show(got); notice.hidden=true;
+  });
+  document.getElementById('vtConvert').addEventListener('click',function(){ notice.hidden=false; notice.scrollIntoView({behavior:'smooth',block:'nearest'}); });
+  document.getElementById('vtReset').addEventListener('click',function(){ player.removeAttribute('src'); show(idle); notice.hidden=true; });
+})();
