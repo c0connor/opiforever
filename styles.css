@@ -265,3 +265,8 @@ footer{padding:64px 0 44px;border-top:1px solid var(--line)}
 @keyframes tglitch{20%{transform:translate(-2px,1px);text-shadow:2px 0 #e0392e,-2px 0 #a8a4ce}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-1px);text-shadow:-2px 0 #e0392e,2px 0 #a8a4ce}80%{transform:translate(1px,1px)}}
 .ghost-chip{position:absolute;z-index:70;background:var(--ink-3);border:1px solid var(--coral);border-radius:10px;padding:6px 14px;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--coral);pointer-events:none;animation:chipfade 3s ease forwards}
 @keyframes chipfade{0%{opacity:0;transform:translateY(8px)}15%{opacity:1;transform:none}85%{opacity:1}100%{opacity:0}}
+
+/* marketplace search */
+.search-bar{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.search-bar .field{flex:2;min-width:200px}
+.search-bar select.field{flex:1;min-width:130px;cursor:pointer;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--lav) 50%),linear-gradient(135deg,var(--lav) 50%,transparent 50%);background-position:calc(100% - 20px) 55%,calc(100% - 14px) 55%;background-size:6px 6px;background-repeat:no-repeat}

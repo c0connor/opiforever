@@ -103,19 +103,58 @@
   });
 })();
 
-/* ---------- 4. Marketplace license filter ---------- */
+/* ---------- 4. Marketplace filters: license chips + search + BPM + key ---------- */
 (function(){
+  var grid=document.getElementById('marketGrid');
+  if(!grid) return;
   var chips=document.querySelectorAll('.chip-btn[data-filter]');
-  if(!chips.length) return;
-  chips.forEach(function(c){ c.addEventListener('click',function(){
-    chips.forEach(function(x){x.classList.remove('active')}); c.classList.add('active');
-    var f=c.getAttribute('data-filter'), any=false;
-    document.querySelectorAll('#marketGrid .card').forEach(function(card){
-      var show=(f==='all')||card.getAttribute('data-lic')===f;
-      card.style.display=show?'':'none'; if(show) any=true;
+  var q=document.getElementById('fQ'), fb=document.getElementById('fBpm'), fk=document.getElementById('fKey');
+  var cards=[].slice.call(grid.querySelectorAll('.card'));
+  // populate key dropdown from the catalog
+  if(fk){
+    var keys={};
+    cards.forEach(function(c){ keys[c.getAttribute('data-key')]=1; });
+    Object.keys(keys).sort().forEach(function(k){
+      var o=document.createElement('option'); o.value=k; o.textContent=k; fk.appendChild(o);
     });
-    var empty=document.getElementById('exclusiveEmpty'); if(empty) empty.hidden=any;
+  }
+  function lic(){ var a=document.querySelector('.chip-btn.active'); return a?a.getAttribute('data-filter'):'all'; }
+  function apply(){
+    var f=lic(), text=(q&&q.value||'').trim().toLowerCase();
+    var bpmRange=(fb&&fb.value)?fb.value.split('-').map(Number):null;
+    var key=(fk&&fk.value)||'';
+    var any=false, anyAtAll=false;
+    cards.forEach(function(card){
+      var show=(f==='all')||card.getAttribute('data-lic')===f;
+      if(show&&text){
+        var hay=(card.getAttribute('data-title')+' '+card.getAttribute('data-genre')+' '+card.getAttribute('data-key')).toLowerCase();
+        show=hay.indexOf(text)>=0;
+      }
+      if(show&&bpmRange){
+        var b=parseInt(card.getAttribute('data-bpm'),10);
+        show=b>=bpmRange[0]&&b<=bpmRange[1];
+      }
+      if(show&&key) show=card.getAttribute('data-key')===key;
+      card.style.display=show?'':'none';
+      if(show){ any=true; }
+    });
+    var empty=document.getElementById('exclusiveEmpty');
+    if(empty){
+      if(!any && f==='exclusive' && !text && !bpmRange && !key){
+        empty.innerHTML='<h3>Exclusives are one-of-one.</h3><p class="muted">The first exclusive drops are being held for launch. Want a catalog vocal exclusively \u2014 or something made to order? <a href="about.html#custom" style="color:var(--coral)">Ask directly \u2192</a></p>';
+        empty.hidden=false;
+      } else if(!any){
+        empty.innerHTML='<h3>No vocals match.</h3><p class="muted">Try widening the search \u2014 or <a href="about.html#custom" style="color:var(--coral)">ask for a custom topline \u2192</a> in exactly the style you need.</p>';
+        empty.hidden=false;
+      } else empty.hidden=true;
+    }
+  }
+  chips.forEach(function(c){ c.addEventListener('click',function(){
+    chips.forEach(function(x){x.classList.remove('active')}); c.classList.add('active'); apply();
   });});
+  if(q) q.addEventListener('input',apply);
+  if(fb) fb.addEventListener('change',apply);
+  if(fk) fk.addEventListener('change',apply);
 })();
 
 /* ---------- 5. Opi Voice — live conversion (mic/upload -> api.opiforever.com) ---------- */

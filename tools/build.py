@@ -40,10 +40,10 @@ def shell(title, body, depth=0, active="", nav=True, desc="Premium EDM toplines,
 # ---------- shared blocks ----------
 def card(t, depth=0):
     p = "../" * depth
-    return ('<div class="card" data-lic="%s"><div class="card-art art-%d"><button class="play" data-src="%sassets/previews/%s.m4a" data-title="%s"%s aria-label="Play preview">▶</button><div class="progress"><i></i></div></div>'
+    return ('<div class="card" data-lic="%s" data-bpm="%d" data-key="%s" data-genre="%s" data-title="%s"><div class="card-art art-%d"><button class="play" data-src="%sassets/previews/%s.m4a" data-title="%s"%s aria-label="Play preview">▶</button><div class="progress"><i></i></div></div>'
             '<div class="card-body"><div class="card-title"><a href="%svocal/%s.html">%s</a></div><div class="card-meta"><span class="chip">%d BPM</span><span class="chip">%s</span><span class="chip">%s</span></div>'
             '<div class="card-foot"><span class="price">$%d</span><a class="lic" href="%svocal/%s.html" style="text-decoration:none">%s →</a></div></div></div>'
-            ) % (t["license"].lower(), t["art"], p, t["slug"], esc(t["title"]), ' data-featured="1"' if t.get("featured") else "", p, t["slug"], esc(t["title"]), t["bpm"], esc(t["key"]), esc(t["genre"]), t["price"], p, t["slug"], t["license"])
+            ) % (t["license"].lower(), t["bpm"], esc(t["key"]), esc(t["genre"]).lower(), esc(t["title"]).lower(), t["art"], p, t["slug"], esc(t["title"]), ' data-featured="1"' if t.get("featured") else "", p, t["slug"], esc(t["title"]), t["bpm"], esc(t["key"]), esc(t["genre"]), t["price"], p, t["slug"], t["license"])
 
 LADDER = '''<section id="pricing" style="padding-top:0"><div class="wrap"><div class="kicker">The ladder</div><h2>Ways to work with Opi</h2><p class="section-sub">From building blocks to one-of-one exclusives.</p>
 <div class="ladder">
@@ -77,6 +77,9 @@ vocals_body = ('<div class="wrap page-head"><div class="kicker">The marketplace<
     '<p>Toplines sung in the Opi voice — every one licensed under a real contract, signed at checkout. Soon, producers who write with <a href="voice.html" style="color:var(--coral)">Opi Voice</a> can sell their toplines here too.</p>'
     '<button class="tour-pill" id="tourBtn" data-tour="market">▶ Let Opi show you around</button>'
     '<button class="tour-pill" id="radioBtn">📻 Opi Radio — play the catalog while you browse</button>'
+    '<div class="search-bar"><input id="fQ" class="field" type="search" placeholder="🔍 Search — title, style, key…">'
+    '<select id="fBpm" class="field"><option value="">Any BPM</option><option value="0-99">Under 100</option><option value="100-124">100–124</option><option value="125-139">125–139</option><option value="140-999">140+</option></select>'
+    '<select id="fKey" class="field"><option value="">Any key</option></select></div>'
     '<div class="filter-bar"><button class="chip-btn active" data-filter="all">All</button><button class="chip-btn" data-filter="non-exclusive">Non-exclusive</button><button class="chip-btn" data-filter="exclusive">Exclusive</button>'
     '<a class="sell-link" href="submit.html">Sell your Opi topline →</a></div></div>'
     '<section style="padding-top:20px"><div class="wrap"><div class="grid" id="marketGrid">%s</div>'
