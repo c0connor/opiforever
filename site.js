@@ -108,8 +108,8 @@
   var grid=document.getElementById('marketGrid');
   if(!grid) return;
   var chips=document.querySelectorAll('.chip-btn[data-filter]');
-  var q=document.getElementById('fQ'), fb=document.getElementById('fBpm'), fk=document.getElementById('fKey');
-  var genreRow=document.getElementById('genreChips'), countEl=document.getElementById('fCount');
+  var q=null, fb=document.getElementById('fBpm'), fk=document.getElementById('fKey');
+  var genreRow=null, countEl=document.getElementById('fCount');
   var cards=[].slice.call(grid.querySelectorAll('.card'));
   // key dropdown from catalog
   if(fk){
