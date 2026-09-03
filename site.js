@@ -246,7 +246,10 @@
 (function(){
   var TOURS={
     voice:{audio:'assets/tour/tour-voice.m4a',
-      cues:[[4.75,'#vtIdle'],[15.15,'.vtool-tips'],[25.4,'#vtInvite'],[37.55,'.vtool .form-note']]},
+      cues:[[4.75,'#vtIdle'],[15.15,'.vtool-tips'],[25.4,'#vtNotice'],[37.55,'.vtool .form-note']],
+      acts:[[4.9,'press','#vtRecord'],[5.6,'recpulse','#vtRecord'],[8.8,'ghostfile'],[11.6,'gotstate'],
+            [25.5,'press','#vtConvert'],[26.4,'status','Opi is singing\u2026 (demo)'],
+            [33.5,'status','Done \u2728 \u2014 your real take comes back right here'],[48.2,'reset']]},
     market:{audio:'assets/tour/tour-market-buy.m4a',
       cues:[[5.85,'.card .play'],[9.4,'.card .card-body'],[19.45,'.steps'],[40.3,'.filter-bar'],[48.25,'nav.top a[href$="voice.html"]']]}
   };
@@ -254,13 +257,32 @@
   if(!btn) return;
   var tour=TOURS[btn.getAttribute('data-tour')], audio=null, spotted=null, timer=null;
   function clearSpot(){ if(spotted){spotted.classList.remove('tour-spot'); spotted=null;} }
-  function stop(){ if(audio){audio.pause(); audio=null;} clearSpot(); clearInterval(timer); btn.textContent='▶ Let Opi show you around'; }
+  var demoTouched=false;
+  function act(kind, sel){
+    var idle=document.getElementById('vtIdle'), got=document.getElementById('vtGot'),
+        notice=document.getElementById('vtNotice'), st=document.getElementById('vtStatus'),
+        name=document.getElementById('vtName'), result=document.getElementById('vtResult');
+    if(kind==='press'){ var el=document.querySelector(sel); if(el){ el.classList.remove('tour-press'); void el.offsetWidth; el.classList.add('tour-press'); } }
+    if(kind==='recpulse'){ var el2=document.querySelector(sel); if(el2){ el2.classList.add('tour-recpulse'); setTimeout(function(){el2.classList.remove('tour-recpulse');},2600); } }
+    if(kind==='ghostfile'){ var card=document.querySelector('.vtool'); if(card){ var gf=document.createElement('div'); gf.className='ghost-file'; gf.textContent='\ud83c\udfb5 my-take.wav'; gf.style.top='90px'; gf.style.right='60px'; card.appendChild(gf); setTimeout(function(){gf.remove();},2300); } }
+    if(kind==='gotstate' && idle && got && !got.hidden===false){ demoTouched=true; idle.hidden=true; got.hidden=false; if(name) name.textContent='your take \u00b7 0:23 (demo)'; if(result) result.hidden=true; }
+    if(kind==='status' && st){ demoTouched=true; st.setAttribute('data-tour-demo','1'); if(notice) notice.hidden=false; st.textContent=sel; }
+    if(kind==='reset'){ if(demoTouched){ if(idle) idle.hidden=false; if(got) got.hidden=true; if(notice) notice.hidden=true; if(st){ st.textContent=''; st.removeAttribute('data-tour-demo'); } demoTouched=false; } }
+  }
+  function stop(){ if(audio){audio.pause(); audio=null;} clearSpot(); clearInterval(timer); act('reset'); btn.textContent='▶ Let Opi show you around'; }
   function start(){
     if(audio){ stop(); return; }
+    // theatrics only run from a clean idle state (never stomp a real session)
+    var gotEl=document.getElementById('vtGot');
+    var canAct=!!(tour.acts && gotEl && gotEl.hidden);
     audio=new Audio(tour.audio);
-    var next=0;
+    var next=0, nextAct=0;
     audio.addEventListener('timeupdate',function(){
       if(!audio) return;
+      while(canAct && nextAct<tour.acts.length && audio.currentTime>=tour.acts[nextAct][0]){
+        act(tour.acts[nextAct][1], tour.acts[nextAct][2]);
+        nextAct++;
+      }
       while(next<tour.cues.length && audio.currentTime>=tour.cues[next][0]){
         clearSpot();
         var el=document.querySelector(tour.cues[next][1]);
@@ -296,6 +318,7 @@
   var played={ready:false,working:false,error:false};
   function chime(f){ try{ new Audio('assets/tour/'+f).play().catch(function(){}); }catch(e){} }
   new MutationObserver(function(){
+    if(statusEl.hasAttribute('data-tour-demo')) return;
     var t=statusEl.textContent||'';
     if(/Done/.test(t) && !played.ready){ played.ready=true; played.working=true; chime('ready-2.m4a'); }
     else if(/failed|lost track|tripped/i.test(t) && !played.error){ played.error=true; chime('error-1.m4a'); }
