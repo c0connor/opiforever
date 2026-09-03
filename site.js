@@ -242,20 +242,23 @@
   });
 })();
 
-/* ---------- 6. Guided tours (her voice + synced spotlights) + chimes ---------- */
+/* ---------- 6. Guided tours: pause/resume + chained journey (voice → market → sell) ---------- */
 (function(){
   var TOURS={
-    voice:{audio:'assets/tour/tour-voice.m4a',
+    voice:{audio:'assets/tour/tour-voice.m4a',nextPage:'vocals.html',nextTour:'market',
       cues:[[4.75,'#vtIdle'],[15.15,'.vtool-tips'],[25.4,'#vtNotice'],[37.55,'.vtool .form-note']],
       acts:[[4.9,'press','#vtRecord'],[5.6,'recpulse','#vtRecord'],[8.8,'ghostfile'],[11.6,'gotstate'],
             [25.5,'press','#vtConvert'],[26.4,'status','Opi is singing\u2026 (demo)'],
             [33.5,'status','Done \u2728 \u2014 your real take comes back right here'],[48.2,'reset']]},
-    market:{audio:'assets/tour/tour-market-buy.m4a',
-      cues:[[5.85,'.card .play'],[9.4,'.card .card-body'],[19.45,'.steps'],[40.3,'.filter-bar'],[48.25,'nav.top a[href$="voice.html"]']]}
+    market:{audio:'assets/tour/tour-market-buy.m4a',nextPage:'submit.html',nextTour:'sell',
+      cues:[[5.85,'.card .play'],[9.4,'.card .card-body'],[19.45,'.steps'],[40.3,'.filter-bar'],[48.25,'nav.top a[href$="voice.html"]']]},
+    sell:{audio:'assets/tour/tour-market-sell.m4a',
+      cues:[[3.75,'#sellTrack'],[12.3,'#sellCredits'],[18.7,'#sellOffer'],[31.35,'.pledges'],[46.1,'.agree']]}
   };
   var btn=document.getElementById('tourBtn');
   if(!btn) return;
-  var tour=TOURS[btn.getAttribute('data-tour')], audio=null, spotted=null, timer=null;
+  var tourName=btn.getAttribute('data-tour'), tour=TOURS[tourName];
+  var audio=null, spotted=null, xBtn=null;
   function clearSpot(){ if(spotted){spotted.classList.remove('tour-spot'); spotted=null;} }
   var demoTouched=false;
   function act(kind, sel){
@@ -265,42 +268,66 @@
     if(kind==='press'){ var el=document.querySelector(sel); if(el){ el.classList.remove('tour-press'); void el.offsetWidth; el.classList.add('tour-press'); } }
     if(kind==='recpulse'){ var el2=document.querySelector(sel); if(el2){ el2.classList.add('tour-recpulse'); setTimeout(function(){el2.classList.remove('tour-recpulse');},2600); } }
     if(kind==='ghostfile'){ var card=document.querySelector('.vtool'); if(card){ var gf=document.createElement('div'); gf.className='ghost-file'; gf.textContent='\ud83c\udfb5 my-take.wav'; gf.style.top='90px'; gf.style.right='60px'; card.appendChild(gf); setTimeout(function(){gf.remove();},2300); } }
-    if(kind==='gotstate' && idle && got && !got.hidden===false){ demoTouched=true; idle.hidden=true; got.hidden=false; if(name) name.textContent='your take \u00b7 0:23 (demo)'; if(result) result.hidden=true; }
+    if(kind==='gotstate' && idle && got){ demoTouched=true; idle.hidden=true; got.hidden=false; if(name) name.textContent='your take \u00b7 0:23 (demo)'; if(result) result.hidden=true; }
     if(kind==='status' && st){ demoTouched=true; st.setAttribute('data-tour-demo','1'); if(notice) notice.hidden=false; st.textContent=sel; }
     if(kind==='reset'){ if(demoTouched){ if(idle) idle.hidden=false; if(got) got.hidden=true; if(notice) notice.hidden=true; if(st){ st.textContent=''; st.removeAttribute('data-tour-demo'); } demoTouched=false; } }
   }
-  function stop(){ if(audio){audio.pause(); audio=null;} clearSpot(); clearInterval(timer); act('reset'); btn.textContent='▶ Let Opi show you around'; }
-  function start(){
-    if(audio){ stop(); return; }
-    // theatrics only run from a clean idle state (never stomp a real session)
+  function setLabel(t){ btn.textContent=t; }
+  function showX(show){
+    if(show && !xBtn){ xBtn=document.createElement('button'); xBtn.className='tour-pill'; xBtn.style.marginLeft='10px'; xBtn.textContent='\u2715 End tour';
+      xBtn.addEventListener('click',endTour); btn.parentNode.insertBefore(xBtn, btn.nextSibling); }
+    if(!show && xBtn){ xBtn.remove(); xBtn=null; }
+  }
+  function endTour(){ if(audio){audio.pause(); audio=null;} clearSpot(); act('reset'); showX(false); setLabel('\u25b6 Let Opi show you around');
+    try{ sessionStorage.removeItem('opi-tour-chain'); }catch(e){} }
+  function finished(){
+    clearSpot(); act('reset'); showX(false); audio=null;
+    if(tour.nextPage && tour.nextTour){
+      setLabel('Next stop: '+(tour.nextTour==='market'?'the marketplace':'selling')+' \u2192');
+      try{ sessionStorage.setItem('opi-tour-chain', tour.nextTour); }catch(e){}
+      setTimeout(function(){ window.location.href=tour.nextPage; },1400);
+    } else {
+      setLabel('\u2728 That\u2019s the tour \u2014 the stage is yours');
+      setTimeout(function(){ setLabel('\u25b6 Let Opi show you around'); },5000);
+    }
+  }
+  var canAct=false, nextCue=0, nextAct=0;
+  function begin(){
     var gotEl=document.getElementById('vtGot');
-    var canAct=!!(tour.acts && gotEl && gotEl.hidden);
-    audio=new Audio(tour.audio);
-    var next=0, nextAct=0;
+    canAct=!!(tour.acts && gotEl && gotEl.hidden);
+    audio=new Audio(tour.audio); nextCue=0; nextAct=0;
     audio.addEventListener('timeupdate',function(){
       if(!audio) return;
-      while(canAct && nextAct<tour.acts.length && audio.currentTime>=tour.acts[nextAct][0]){
-        act(tour.acts[nextAct][1], tour.acts[nextAct][2]);
-        nextAct++;
+      while(canAct && tour.acts && nextAct<tour.acts.length && audio.currentTime>=tour.acts[nextAct][0]){
+        act(tour.acts[nextAct][1], tour.acts[nextAct][2]); nextAct++;
       }
-      while(next<tour.cues.length && audio.currentTime>=tour.cues[next][0]){
+      while(nextCue<tour.cues.length && audio.currentTime>=tour.cues[nextCue][0]){
         clearSpot();
-        var el=document.querySelector(tour.cues[next][1]);
+        var el=document.querySelector(tour.cues[nextCue][1]);
         if(el){ el.classList.add('tour-spot'); el.scrollIntoView({behavior:'smooth',block:'center'}); spotted=el; }
-        next++;
+        nextCue++;
       }
     });
-    audio.addEventListener('ended',stop);
-    audio.play().then(function(){ btn.textContent='■ Stop the tour'; })
-      .catch(function(){ btn.classList.add('pulse'); });
+    audio.addEventListener('ended',finished);
+    audio.play().then(function(){ setLabel('\u23f8 Pause the tour'); showX(true); })
+      .catch(function(){ audio=null; btn.classList.add('pulse'); });
   }
-  btn.addEventListener('click',function(){ btn.classList.remove('pulse'); start(); });
-  // auto-start when arriving from the landing "Opi shows you around" door
+  btn.addEventListener('click',function(){
+    btn.classList.remove('pulse');
+    if(!audio){ begin(); return; }
+    if(audio.paused){ audio.play(); setLabel('\u23f8 Pause the tour'); }
+    else { audio.pause(); setLabel('\u25b6 Resume the tour'); }
+  });
+  // auto-start: landing door (voice) or chained arrival (market/sell)
   try{
-    if(sessionStorage.getItem('opi-tour')==='1'){
-      sessionStorage.removeItem('opi-tour');
+    var wantsVoice = tourName==='voice' && sessionStorage.getItem('opi-tour')==='1';
+    var chain = sessionStorage.getItem('opi-tour-chain');
+    var wantsChain = chain===tourName;
+    if(wantsVoice) sessionStorage.removeItem('opi-tour');
+    if(wantsChain) sessionStorage.removeItem('opi-tour-chain');
+    if(wantsVoice||wantsChain){
       setTimeout(function(){
-        if(!document.getElementById('gate')) start();
+        if(!document.getElementById('gate')) begin();
         else btn.classList.add('pulse');
       },600);
     }

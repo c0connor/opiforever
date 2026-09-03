@@ -270,18 +270,19 @@ open(os.path.join(ROOT, "license.html"), "w").write(shell("License terms — Opi
 # ---------- 7. Marketplace submission page (preview until Opi Voice launches) ----------
 submit_body = """<div class="wrap page-head"><div class="kicker">Sell on the marketplace</div><h1>Submit your Opi topline</h1>
 <p>Wrote a topline with <a href="voice.html" style="color:var(--coral)">Opi Voice</a>? List it here. You keep your publishing and set your own price — the marketplace takes 10% of each sale. Every submission is screened before it lists; every sale runs through a signed license.</p>
-<p class="mono" style="color:var(--coral);font-size:.85rem;margin-top:14px">SUBMISSIONS OPEN WHEN OPI VOICE LAUNCHES — THIS FORM IS A PREVIEW.</p></div>
+<p class="mono" style="color:var(--coral);font-size:.85rem;margin-top:14px">SUBMISSIONS OPEN WHEN OPI VOICE LAUNCHES — THIS FORM IS A PREVIEW.</p>
+<button class="tour-pill" id="tourBtn" data-tour="sell">▶ Let Opi show you around</button></div>
 <section style="padding-top:16px"><div class="wrap narrow">
 <form data-placeholder="Preview mode — nothing was sent. Submissions open with Opi Voice." class="submit-form">
 <h3>The track</h3>
-<div class="form-grid">
+<div class="form-grid" id="sellTrack">
 <label>Title<input class="field" type="text" placeholder="e.g. Midnight Run" required></label>
 <label>BPM<input class="field" type="number" placeholder="128" min="40" max="220" required></label>
 <label>Key<input class="field" type="text" placeholder="e.g. F minor" required></label>
 <label>Genre / mood<input class="field" type="text" placeholder="melodic house, euphoric" required></label>
 </div>
 <h3>Credits &amp; splits</h3>
-<div class="form-grid">
+<div class="form-grid" id="sellCredits">
 <label>All songwriters<input class="field" type="text" placeholder="every writer, comma-separated" required></label>
 <label>Publishing you keep (%)<input class="field" type="number" placeholder="100" min="0" max="100" required></label>
 <label>Your PRO <span class="opt">(optional)</span><input class="field" type="text" placeholder="ASCAP / BMI / SOCAN…"></label>
@@ -294,7 +295,7 @@ submit_body = """<div class="wrap page-head"><div class="kicker">Sell on the mar
 </div>
 <p class="form-note">File uploads open at launch. Stems must be WAVs made with Opi Voice — each conversion carries an ID, and submissions are matched to a real session during screening.</p>
 <h3>The offer</h3>
-<div class="form-grid">
+<div class="form-grid" id="sellOffer">
 <label>Your price (USD)<input class="field" type="number" placeholder="80" min="10" required></label>
 <label>License type<span class="radio-row"><label class="radio"><input type="radio" name="lictype" checked> Non-exclusive</label><label class="radio"><input type="radio" name="lictype"> Exclusive</label></span></label>
 </div>
