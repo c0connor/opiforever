@@ -274,3 +274,7 @@ footer{padding:64px 0 44px;border-top:1px solid var(--line)}
 /* genre chips row */
 .genre-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;align-items:center}
 .genre-row .chip-btn{text-transform:capitalize}
+
+/* compact right-aligned filters */
+.search-bar{justify-content:flex-end;margin-top:10px}
+.search-bar select.field{flex:0 0 auto;min-width:0;width:auto;padding:8px 34px 8px 14px;font-size:.85rem}
