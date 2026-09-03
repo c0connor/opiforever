@@ -65,16 +65,17 @@ index_body = '''<div class="intro">
 <video autoplay muted loop playsinline poster="assets/hero.jpg"><source src="assets/intro.mp4" type="video/mp4"></video>
 <div class="intro-inner">
 <div class="intro-logo blackletter">Opi</div>
-<div class="intro-tag">Toplines from a world of her own.</div>
-<div class="intro-ctas"><a class="btn big enter-sound" href="vocals.html">Enter with sound 🔊</a><a class="btn big ghost" href="vocals.html">Enter quietly</a></div>
+<div class="intro-tag">Sing your idea. Hear it in my voice.</div>
+<div class="intro-ctas"><a class="btn big tour-enter" href="voice.html">✨ Enter — Opi shows you around</a><a class="btn big ghost" href="voice.html">Enter quietly</a></div>
 </div>
-<div class="intro-links"><a href="vocals.html">Vocals</a><a href="voice.html">Opi Voice</a><a href="about.html">About</a></div>
+<div class="intro-links"><a href="vocals.html">Marketplace</a><a href="voice.html">Opi Voice</a><a href="about.html">About</a></div>
 </div>'''
 open(os.path.join(ROOT, "index.html"), "w").write(shell("Opi — Toplines from a world of her own", index_body, nav=False))
 
 # ---------- 2. vocals (marketplace) ----------
 vocals_body = ('<div class="wrap page-head"><div class="kicker">The marketplace</div><h1>Vocal marketplace</h1>'
     '<p>Toplines sung in the Opi voice — every one licensed under a real contract, signed at checkout. Soon, producers who write with <a href="voice.html" style="color:var(--coral)">Opi Voice</a> can sell their toplines here too.</p>'
+    '<button class="tour-pill" id="tourBtn" data-tour="market">▶ Let Opi show you around</button>'
     '<div class="filter-bar"><button class="chip-btn active" data-filter="all">All</button><button class="chip-btn" data-filter="non-exclusive">Non-exclusive</button><button class="chip-btn" data-filter="exclusive">Exclusive</button>'
     '<a class="sell-link" href="submit.html">Sell your Opi topline →</a></div></div>'
     '<section style="padding-top:20px"><div class="wrap"><div class="grid" id="marketGrid">%s</div>'
@@ -111,7 +112,8 @@ for t in TRACKS:
 
 # ---------- 4. Opi Voice ----------
 voice_body = """<div class="wrap page-head"><div class="kicker">The voice, live</div><h1>Opi Voice</h1><p>Sing your idea. Hear it in my voice. Record right here or drop in a take — tuned vocals convert best.</p>
-<p class="mono" style="color:var(--coral);font-size:.85rem;margin-top:14px">PRIVATE BETA — LIVE CONVERSIONS. NO INVITE CODE = 15-SECOND TRIAL.</p></div>
+<p class="mono" style="color:var(--coral);font-size:.85rem;margin-top:14px">PRIVATE BETA — LIVE CONVERSIONS. NO INVITE CODE = 15-SECOND TRIAL.</p>
+<button class="tour-pill" id="tourBtn" data-tour="voice">▶ Let Opi show you around</button></div>
 <section style="padding-top:16px"><div class="wrap narrow">
 <div class="vtool">
   <div class="vtool-modes"><span class="vmode active" id="vmSimple">Simple</span><span class="vmode" id="vmPro">Pro</span></div>
