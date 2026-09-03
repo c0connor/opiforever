@@ -273,3 +273,4 @@ footer{padding:64px 0 44px;border-top:1px solid var(--line)}
 
 /* genre chips row */
 .genre-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.genre-row .chip-btn{text-transform:capitalize}
