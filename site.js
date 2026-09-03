@@ -103,14 +103,15 @@
   });
 })();
 
-/* ---------- 4. Marketplace filters: license chips + search + BPM + key ---------- */
+/* ---------- 4. Marketplace filters: chips + search + BPM + key + genres ---------- */
 (function(){
   var grid=document.getElementById('marketGrid');
   if(!grid) return;
   var chips=document.querySelectorAll('.chip-btn[data-filter]');
   var q=document.getElementById('fQ'), fb=document.getElementById('fBpm'), fk=document.getElementById('fKey');
+  var genreRow=document.getElementById('genreChips'), countEl=document.getElementById('fCount');
   var cards=[].slice.call(grid.querySelectorAll('.card'));
-  // populate key dropdown from the catalog
+  // key dropdown from catalog
   if(fk){
     var keys={};
     cards.forEach(function(c){ keys[c.getAttribute('data-key')]=1; });
@@ -118,12 +119,30 @@
       var o=document.createElement('option'); o.value=k; o.textContent=k; fk.appendChild(o);
     });
   }
-  function lic(){ var a=document.querySelector('.chip-btn.active'); return a?a.getAttribute('data-filter'):'all'; }
+  // genre chips from catalog (Splice-style, multi-select)
+  var activeGenres={};
+  if(genreRow){
+    var gset={};
+    cards.forEach(function(c){
+      (c.getAttribute('data-genre')||'').split(/[^a-z]+/).forEach(function(t){ if(t) gset[t]=1; });
+    });
+    Object.keys(gset).sort().forEach(function(gname){
+      var b=document.createElement('button'); b.className='chip-btn'; b.textContent=gname;
+      b.addEventListener('click',function(){
+        if(activeGenres[gname]){ delete activeGenres[gname]; b.classList.remove('active'); }
+        else { activeGenres[gname]=1; b.classList.add('active'); }
+        apply();
+      });
+      genreRow.insertBefore(b, countEl);
+    });
+  }
+  function lic(){ var a=document.querySelector('.chip-btn.active[data-filter]'); return a?a.getAttribute('data-filter'):'all'; }
   function apply(){
     var f=lic(), text=(q&&q.value||'').trim().toLowerCase();
     var bpmRange=(fb&&fb.value)?fb.value.split('-').map(Number):null;
     var key=(fk&&fk.value)||'';
-    var any=false, anyAtAll=false;
+    var gsel=Object.keys(activeGenres);
+    var shown=0;
     cards.forEach(function(card){
       var show=(f==='all')||card.getAttribute('data-lic')===f;
       if(show&&text){
@@ -135,15 +154,20 @@
         show=b>=bpmRange[0]&&b<=bpmRange[1];
       }
       if(show&&key) show=card.getAttribute('data-key')===key;
+      if(show&&gsel.length){
+        var toks=(card.getAttribute('data-genre')||'').split(/[^a-z]+/);
+        show=gsel.some(function(g){ return toks.indexOf(g)>=0; });
+      }
       card.style.display=show?'':'none';
-      if(show){ any=true; }
+      if(show) shown++;
     });
+    if(countEl) countEl.textContent=shown+(shown===1?' vocal':' vocals');
     var empty=document.getElementById('exclusiveEmpty');
     if(empty){
-      if(!any && f==='exclusive' && !text && !bpmRange && !key){
+      if(!shown && f==='exclusive' && !text && !bpmRange && !key && !gsel.length){
         empty.innerHTML='<h3>Exclusives are one-of-one.</h3><p class="muted">The first exclusive drops are being held for launch. Want a catalog vocal exclusively \u2014 or something made to order? <a href="about.html#custom" style="color:var(--coral)">Ask directly \u2192</a></p>';
         empty.hidden=false;
-      } else if(!any){
+      } else if(!shown){
         empty.innerHTML='<h3>No vocals match.</h3><p class="muted">Try widening the search \u2014 or <a href="about.html#custom" style="color:var(--coral)">ask for a custom topline \u2192</a> in exactly the style you need.</p>';
         empty.hidden=false;
       } else empty.hidden=true;
@@ -155,6 +179,7 @@
   if(q) q.addEventListener('input',apply);
   if(fb) fb.addEventListener('change',apply);
   if(fk) fk.addEventListener('change',apply);
+  apply();
 })();
 
 /* ---------- 5. Opi Voice — live conversion (mic/upload -> api.opiforever.com) ---------- */

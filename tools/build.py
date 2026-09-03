@@ -3,10 +3,11 @@
 Build every page of opiforever.com from tracks.json + the templates below.
 Run:  python3 tools/build.py      (then commit + push to publish)
 """
-import json, os, html
+import json, os, html, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TRACKS = json.load(open(os.path.join(ROOT, "tracks.json")))
+V = str(int(time.time()))
 
 SOCIALS = {
     "Instagram": "https://www.instagram.com/opi.forever",
@@ -34,7 +35,7 @@ def shell(title, body, depth=0, active="", nav=True, desc="Premium EDM toplines,
     nowplaying = '<div class="now-playing"><button class="play np-toggle" aria-label="Pause">❚❚</button><span class="np-title"></span><button class="np-close" style="background:none;border:none;color:var(--lav);cursor:pointer;font-size:1rem" aria-label="Close">✕</button></div>'
     return ('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">'
             '<title>%s</title><meta name="description" content="%s"><meta name="robots" content="noindex, nofollow">%s'
-            '<link rel="stylesheet" href="%sstyles.css"></head><body>%s%s%s%s<script src="%ssite.js"></script></body></html>'
+            '<link rel="stylesheet" href="%sstyles.css?v='+V+'"></head><body>%s%s%s%s<script src="%ssite.js?v='+V+'"></script></body></html>'
             ) % (esc(title), esc(desc), FONTS, p, navhtml, body, footer if nav else "", nowplaying if nav else "", p)
 
 # ---------- shared blocks ----------
@@ -76,10 +77,10 @@ open(os.path.join(ROOT, "index.html"), "w").write(shell("Opi — Toplines from a
 vocals_body = ('<div class="wrap page-head"><div class="kicker">The marketplace</div><h1>Vocal marketplace</h1>'
     '<p>Toplines sung in the Opi voice — every one licensed under a real contract, signed at checkout. Soon, producers who write with <a href="voice.html" style="color:var(--coral)">Opi Voice</a> can sell their toplines here too.</p>'
     '<button class="tour-pill" id="tourBtn" data-tour="market">▶ Let Opi show you around</button>'
-    '<button class="tour-pill" id="radioBtn">📻 Opi Radio — play the catalog while you browse</button>'
     '<div class="search-bar"><input id="fQ" class="field" type="search" placeholder="🔍 Search — title, style, key…">'
     '<select id="fBpm" class="field"><option value="">Any BPM</option><option value="0-99">Under 100</option><option value="100-124">100–124</option><option value="125-139">125–139</option><option value="140-999">140+</option></select>'
     '<select id="fKey" class="field"><option value="">Any key</option></select></div>'
+    '<div class="genre-row" id="genreChips"><span class="muted" id="fCount" style="margin-left:auto;font-size:.85rem"></span></div>'
     '<div class="filter-bar"><button class="chip-btn active" data-filter="all">All</button><button class="chip-btn" data-filter="non-exclusive">Non-exclusive</button><button class="chip-btn" data-filter="exclusive">Exclusive</button>'
     '<a class="sell-link" href="submit.html">Sell your Opi topline →</a></div></div>'
     '<section style="padding-top:20px"><div class="wrap"><div class="grid" id="marketGrid">%s</div>'

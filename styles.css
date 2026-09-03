@@ -270,3 +270,6 @@ footer{padding:64px 0 44px;border-top:1px solid var(--line)}
 .search-bar{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
 .search-bar .field{flex:2;min-width:200px}
 .search-bar select.field{flex:1;min-width:130px;cursor:pointer;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--lav) 50%),linear-gradient(135deg,var(--lav) 50%,transparent 50%);background-position:calc(100% - 20px) 55%,calc(100% - 14px) 55%;background-size:6px 6px;background-repeat:no-repeat}
+
+/* genre chips row */
+.genre-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;align-items:center}
