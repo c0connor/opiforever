@@ -76,6 +76,7 @@ open(os.path.join(ROOT, "index.html"), "w").write(shell("Opi — Toplines from a
 vocals_body = ('<div class="wrap page-head"><div class="kicker">The marketplace</div><h1>Vocal marketplace</h1>'
     '<p>Toplines sung in the Opi voice — every one licensed under a real contract, signed at checkout. Soon, producers who write with <a href="voice.html" style="color:var(--coral)">Opi Voice</a> can sell their toplines here too.</p>'
     '<button class="tour-pill" id="tourBtn" data-tour="market">▶ Let Opi show you around</button>'
+    '<button class="tour-pill" id="radioBtn">📻 Opi Radio — play the catalog while you browse</button>'
     '<div class="filter-bar"><button class="chip-btn active" data-filter="all">All</button><button class="chip-btn" data-filter="non-exclusive">Non-exclusive</button><button class="chip-btn" data-filter="exclusive">Exclusive</button>'
     '<a class="sell-link" href="submit.html">Sell your Opi topline →</a></div></div>'
     '<section style="padding-top:20px"><div class="wrap"><div class="grid" id="marketGrid">%s</div>'

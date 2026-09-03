@@ -52,6 +52,7 @@
   }
   function stop(){ audio.pause(); setState(current,false); current=null; if(bar) bar.classList.remove('show'); }
   function play(btn){
+    try{ document.dispatchEvent(new CustomEvent('opi-audio',{detail:'cards'})); }catch(e){}
     if(current===btn){ if(audio.paused){ audio.play(); setState(btn,true);} else { audio.pause(); setState(btn,false);} return; }
     setState(current,false);
     current=btn; audio.src=btn.getAttribute('data-src'); audio.currentTime=0;
@@ -74,6 +75,9 @@
     if(btn){ e.preventDefault(); play(btn); return; }
     if(e.target.closest('.np-toggle')){ if(current){ play(current);} }
     if(e.target.closest('.np-close')){ stop(); }
+  });
+  document.addEventListener('opi-audio',function(e){
+    if(e.detail!=='cards' && !audio.paused){ audio.pause(); setState(current,false); if(bar) bar.classList.remove('show'); }
   });
   // "Enter with sound" handoff from the intro page
   try{
@@ -310,6 +314,9 @@
       xBtn.addEventListener('click',endTour); btn.parentNode.insertBefore(xBtn, btn.nextSibling); }
     if(!show && xBtn){ xBtn.remove(); xBtn=null; }
   }
+  document.addEventListener('opi-audio',function(e){
+    if(e.detail!=='tour' && audio && !audio.paused){ audio.pause(); setLabel('\u25b6 Resume the tour'); }
+  });
   function endTour(){ if(audio){audio.pause(); audio=null;} clearSpot(); act('reset'); showX(false); setLabel('\u25b6 Let Opi show you around');
     try{ sessionStorage.removeItem('opi-tour-chain'); }catch(e){} }
   function finished(){
@@ -342,13 +349,15 @@
       }
     });
     audio.addEventListener('ended',finished);
-    audio.play().then(function(){ setLabel('\u23f8 Pause the tour'); showX(true); })
+    audio.play().then(function(){ setLabel('\u23f8 Pause the tour'); showX(true);
+        try{ document.dispatchEvent(new CustomEvent('opi-audio',{detail:'tour'})); }catch(e){} })
       .catch(function(){ audio=null; btn.classList.add('pulse'); });
   }
   btn.addEventListener('click',function(){
     btn.classList.remove('pulse');
     if(!audio){ begin(); return; }
-    if(audio.paused){ audio.play(); setLabel('\u23f8 Pause the tour'); }
+    if(audio.paused){ audio.play(); setLabel('\u23f8 Pause the tour');
+      try{ document.dispatchEvent(new CustomEvent('opi-audio',{detail:'tour'})); }catch(e){} }
     else { audio.pause(); setLabel('\u25b6 Resume the tour'); }
   });
   // auto-start: landing door (voice) or chained arrival (market/sell)
@@ -385,4 +394,42 @@
     else if(/\((7[5-9]|8[0-9])s\)/.test(t) && !played.working){ played.working=true; chime('working-1.m4a'); }
     else if(/Sending to the engine/.test(t)){ played={ready:false,working:false,error:false}; }
   }).observe(statusEl,{childList:true,characterData:true,subtree:true});
+})();
+
+
+/* ---------- 7. Opi Radio: shuffle the catalog while you browse ---------- */
+(function(){
+  var rb=document.getElementById('radioBtn');
+  if(!rb) return;
+  var nodes=document.querySelectorAll('#marketGrid .play[data-src]');
+  var items=[]; nodes.forEach(function(b){ items.push({src:b.getAttribute('data-src'), title:b.getAttribute('data-title')}); });
+  if(!items.length){ rb.hidden=true; return; }
+  var order=[], pos=0, audio=null, nextBtn=null;
+  function shuffle(){ order=items.slice();
+    for(var i=order.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=order[i]; order[i]=order[j]; order[j]=t; }
+    pos=0; }
+  function label(t){ rb.textContent=t; }
+  function showNext(sh){
+    if(sh&&!nextBtn){ nextBtn=document.createElement('button'); nextBtn.className='tour-pill'; nextBtn.style.marginLeft='10px';
+      nextBtn.textContent='\u23ed'; nextBtn.title='Next track'; nextBtn.addEventListener('click',nextTrack);
+      rb.parentNode.insertBefore(nextBtn, rb.nextSibling); }
+    if(!sh&&nextBtn){ nextBtn.remove(); nextBtn=null; }
+  }
+  function announce(){ try{ document.dispatchEvent(new CustomEvent('opi-audio',{detail:'radio'})); }catch(e){} }
+  function playCur(){
+    var it=order[pos];
+    if(!audio){ audio=new Audio(); audio.addEventListener('ended',nextTrack); }
+    audio.src=it.src;
+    audio.play().then(function(){ announce(); label('\ud83d\udcfb '+it.title+' \u00b7 \u23f8'); showNext(true); })
+      .catch(function(){ label('\ud83d\udcfb tap again to start the radio'); });
+  }
+  function nextTrack(){ pos=pos+1; if(pos>=order.length){ shuffle(); } playCur(); }
+  rb.addEventListener('click',function(){
+    if(!audio||!audio.src){ shuffle(); playCur(); return; }
+    if(audio.paused){ audio.play(); announce(); label('\ud83d\udcfb '+order[pos].title+' \u00b7 \u23f8'); }
+    else { audio.pause(); label('\ud83d\udcfb paused \u2014 tap to resume'); }
+  });
+  document.addEventListener('opi-audio',function(e){
+    if(e.detail!=='radio' && audio && !audio.paused){ audio.pause(); label('\ud83d\udcfb Opi Radio \u2014 tap to resume'); }
+  });
 })();
