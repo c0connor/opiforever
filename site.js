@@ -251,9 +251,13 @@
             [25.5,'press','#vtConvert'],[26.4,'status','Opi is singing\u2026 (demo)'],
             [33.5,'status','Done \u2728 \u2014 your real take comes back right here'],[48.2,'reset']]},
     market:{audio:'assets/tour/tour-market-buy.m4a',nextPage:'submit.html',nextTour:'sell',
-      cues:[[5.85,'.card .play'],[9.4,'.card .card-body'],[19.45,'.steps'],[40.3,'.filter-bar'],[48.25,'nav.top a[href$="voice.html"]']]},
+      cues:[[5.85,'.card .play'],[9.4,'.card .card-body'],[19.45,'.steps'],[40.3,'.filter-bar'],[48.25,'nav.top a[href$="voice.html"]']],
+      acts:[[6.0,'press','.card .play'],[6.4,'pulse','.card .play'],[9.6,'cardpop','.card'],
+            [31.3,'confetti'],[40.5,'chipdance'],[48.4,'glitch','nav.top a[href$="voice.html"]']]},
     sell:{audio:'assets/tour/tour-market-sell.m4a',
-      cues:[[3.75,'#sellTrack'],[12.3,'#sellCredits'],[18.7,'#sellOffer'],[31.35,'.pledges'],[46.1,'.agree']]}
+      cues:[[3.75,'#sellTrack'],[12.3,'#sellCredits'],[18.7,'#sellOffer'],[31.35,'.pledges'],[46.1,'.agree']],
+      acts:[[4.1,'ghosttype'],[12.6,'press','.pledges .pledge:nth-child(1)'],
+            [19.2,'pricedemo'],[31.6,'pledgewave'],[46.3,'checkagree'],[52.5,'reset']]}
   };
   var btn=document.getElementById('tourBtn');
   if(!btn) return;
@@ -270,7 +274,35 @@
     if(kind==='ghostfile'){ var card=document.querySelector('.vtool'); if(card){ var gf=document.createElement('div'); gf.className='ghost-file'; gf.textContent='\ud83c\udfb5 my-take.wav'; gf.style.top='90px'; gf.style.right='60px'; card.appendChild(gf); setTimeout(function(){gf.remove();},2300); } }
     if(kind==='gotstate' && idle && got){ demoTouched=true; idle.hidden=true; got.hidden=false; if(name) name.textContent='your take \u00b7 0:23 (demo)'; if(result) result.hidden=true; }
     if(kind==='status' && st){ demoTouched=true; st.setAttribute('data-tour-demo','1'); if(notice) notice.hidden=false; st.textContent=sel; }
-    if(kind==='reset'){ if(demoTouched){ if(idle) idle.hidden=false; if(got) got.hidden=true; if(notice) notice.hidden=true; if(st){ st.textContent=''; st.removeAttribute('data-tour-demo'); } demoTouched=false; } }
+    if(kind==='pulse'){ var pe=document.querySelector(sel); if(pe){ pe.classList.add('tour-recpulse'); setTimeout(function(){pe.classList.remove('tour-recpulse');},2400); } }
+    if(kind==='cardpop'){ var cp=document.querySelector(sel); if(cp){ cp.classList.remove('tour-cardpop'); void cp.offsetWidth; cp.classList.add('tour-cardpop'); } }
+    if(kind==='confetti'){ var cc=document.createElement('div'); cc.className='tour-confetti';
+      for(var ci=0;ci<70;ci++){ var pi=document.createElement('i');
+        pi.style.setProperty('--dx',((Math.random()*2-1)*45)+'vw');
+        pi.style.setProperty('--dy',(Math.random()*55+30)+'vh');
+        pi.style.setProperty('--r',(Math.random()*720-360)+'deg');
+        pi.style.left='50%'; pi.style.top='18%';
+        pi.style.background=['#f26b4f','#a8a4ce','#f4f0e6','#e0392e'][ci%4];
+        pi.style.animationDelay=(Math.random()*0.35)+'s'; cc.appendChild(pi); }
+      document.body.appendChild(cc); setTimeout(function(){cc.remove();},2800); }
+    if(kind==='chipdance'){ document.querySelectorAll('.chip-btn').forEach(function(ch,i){
+        setTimeout(function(){ ch.classList.remove('tour-press'); void ch.offsetWidth; ch.classList.add('tour-press'); }, i*350); }); }
+    if(kind==='glitch'){ var gl=document.querySelector(sel); if(gl){ gl.classList.add('tour-glitch'); setTimeout(function(){gl.classList.remove('tour-glitch');},2200); } }
+    if(kind==='ghosttype'){ demoTouched=true;
+      var fields=[['#sellTrack input:nth-of-type(1)','Midnight Run'],['#sellTrack label:nth-child(2) input','128'],['#sellTrack label:nth-child(3) input','F minor']];
+      var ins=document.querySelectorAll('#sellTrack input'); var texts=['Midnight Run','128','F minor'];
+      ins.forEach(function(inp,i){ if(i>2||!texts[i]) return; inp.setAttribute('data-tour-demo','1');
+        var t=texts[i], k=0; setTimeout(function type(){ if(k<=t.length){ inp.value=t.slice(0,k); k++; setTimeout(type,55);} }, i*1400); }); }
+    if(kind==='pricedemo'){ demoTouched=true; var pr=document.querySelector('#sellOffer input[type=number]');
+      if(pr){ pr.setAttribute('data-tour-demo','1'); var v=0; var iv=setInterval(function(){ v+=25; pr.value=v; if(v>=300){ clearInterval(iv);
+        var off=document.getElementById('sellOffer'); if(off){ off.style.position='relative'; var gc=document.createElement('div'); gc.className='ghost-chip'; gc.textContent='\u2212 10% \u2192 you keep $270'; gc.style.top='-14px'; gc.style.right='10px'; off.appendChild(gc); setTimeout(function(){gc.remove();},3100); } } },70); } }
+    if(kind==='pledgewave'){ document.querySelectorAll('.pledges .pledge').forEach(function(pl,i){
+        setTimeout(function(){ pl.classList.remove('tour-press'); void pl.offsetWidth; pl.classList.add('tour-press'); }, i*450); }); }
+    if(kind==='checkagree'){ demoTouched=true; var ag=document.querySelector('.agree input'); if(ag){ ag.setAttribute('data-tour-demo','1'); ag.checked=true; }
+      var sb=document.querySelector('.submit-form button[type=submit]'); if(sb){ sb.classList.remove('tour-press'); void sb.offsetWidth; sb.classList.add('tour-press'); } }
+    if(kind==='reset'){ if(demoTouched){ if(idle) idle.hidden=false; if(got) got.hidden=true; if(notice) notice.hidden=true; if(st){ st.textContent=''; st.removeAttribute('data-tour-demo'); }
+      document.querySelectorAll('input[data-tour-demo]').forEach(function(di){ if(di.type==='checkbox') di.checked=false; else di.value=''; di.removeAttribute('data-tour-demo'); });
+      demoTouched=false; } }
   }
   function setLabel(t){ btn.textContent=t; }
   function showX(show){
@@ -293,8 +325,9 @@
   }
   var canAct=false, nextCue=0, nextAct=0;
   function begin(){
-    var gotEl=document.getElementById('vtGot');
-    canAct=!!(tour.acts && gotEl && gotEl.hidden);
+    if(tourName==='voice'){ var gotEl=document.getElementById('vtGot'); canAct=!!(tour.acts && gotEl && gotEl.hidden); }
+    else if(tourName==='sell'){ var ti=document.querySelector('#sellTrack input'); canAct=!!(tour.acts && ti && !ti.value); }
+    else { canAct=!!tour.acts; }
     audio=new Audio(tour.audio); nextCue=0; nextAct=0;
     audio.addEventListener('timeupdate',function(){
       if(!audio) return;
