@@ -241,3 +241,65 @@
       .catch(function(e){ setStatus('Couldn\u2019t reach the engine: '+(e&&e.message||'try again soon.')); });
   });
 })();
+
+/* ---------- 6. Guided tours (her voice + synced spotlights) + chimes ---------- */
+(function(){
+  var TOURS={
+    voice:{audio:'assets/tour/tour-voice.m4a',
+      cues:[[4.75,'#vtIdle'],[15.15,'.vtool-tips'],[25.4,'#vtInvite'],[37.55,'.vtool .form-note']]},
+    market:{audio:'assets/tour/tour-market-buy.m4a',
+      cues:[[5.85,'.card .play'],[9.4,'.card .card-body'],[19.45,'.steps'],[40.3,'.filter-bar'],[48.25,'nav.top a[href$="voice.html"]']]}
+  };
+  var btn=document.getElementById('tourBtn');
+  if(!btn) return;
+  var tour=TOURS[btn.getAttribute('data-tour')], audio=null, spotted=null, timer=null;
+  function clearSpot(){ if(spotted){spotted.classList.remove('tour-spot'); spotted=null;} }
+  function stop(){ if(audio){audio.pause(); audio=null;} clearSpot(); clearInterval(timer); btn.textContent='▶ Let Opi show you around'; }
+  function start(){
+    if(audio){ stop(); return; }
+    audio=new Audio(tour.audio);
+    var next=0;
+    audio.addEventListener('timeupdate',function(){
+      if(!audio) return;
+      while(next<tour.cues.length && audio.currentTime>=tour.cues[next][0]){
+        clearSpot();
+        var el=document.querySelector(tour.cues[next][1]);
+        if(el){ el.classList.add('tour-spot'); el.scrollIntoView({behavior:'smooth',block:'center'}); spotted=el; }
+        next++;
+      }
+    });
+    audio.addEventListener('ended',stop);
+    audio.play().then(function(){ btn.textContent='■ Stop the tour'; })
+      .catch(function(){ btn.classList.add('pulse'); });
+  }
+  btn.addEventListener('click',function(){ btn.classList.remove('pulse'); start(); });
+  // auto-start when arriving from the landing "Opi shows you around" door
+  try{
+    if(sessionStorage.getItem('opi-tour')==='1'){
+      sessionStorage.removeItem('opi-tour');
+      setTimeout(function(){
+        if(!document.getElementById('gate')) start();
+        else btn.classList.add('pulse');
+      },600);
+    }
+  }catch(e){}
+})();
+(function(){
+  document.querySelectorAll('.tour-enter').forEach(function(a){
+    a.addEventListener('click',function(){ try{ sessionStorage.setItem('opi-tour','1'); }catch(e){} });
+  });
+})();
+/* chimes: hook into the conversion status via tiny observer on the status element */
+(function(){
+  var statusEl=document.getElementById('vtStatus');
+  if(!statusEl) return;
+  var played={ready:false,working:false,error:false};
+  function chime(f){ try{ new Audio('assets/tour/'+f).play().catch(function(){}); }catch(e){} }
+  new MutationObserver(function(){
+    var t=statusEl.textContent||'';
+    if(/Done/.test(t) && !played.ready){ played.ready=true; played.working=true; chime('ready-2.m4a'); }
+    else if(/failed|lost track|tripped/i.test(t) && !played.error){ played.error=true; chime('error-1.m4a'); }
+    else if(/\((7[5-9]|8[0-9])s\)/.test(t) && !played.working){ played.working=true; chime('working-1.m4a'); }
+    else if(/Sending to the engine/.test(t)){ played={ready:false,working:false,error:false}; }
+  }).observe(statusEl,{childList:true,characterData:true,subtree:true});
+})();

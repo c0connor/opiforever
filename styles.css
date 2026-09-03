@@ -237,3 +237,11 @@ footer{padding:64px 0 44px;border-top:1px solid var(--line)}
 .knob input[type=range]{width:100%;margin:6px 0 2px;accent-color:var(--coral)}
 .knob small{display:block;color:#7c78a3;font-weight:400}
 .vmode{cursor:pointer}
+
+/* guided tour */
+.tour-pill{margin-top:16px;background:var(--ink-2);border:1.5px solid var(--coral);color:var(--cream);border-radius:999px;padding:10px 22px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s}
+.tour-pill:hover{background:var(--coral);color:var(--ink)}
+.tour-pill.pulse{animation:tourpulse 1.6s infinite}
+@keyframes tourpulse{50%{box-shadow:0 0 0 10px rgba(242,107,79,.15)}}
+.tour-spot{outline:3px solid var(--coral) !important;outline-offset:6px;border-radius:12px;animation:spotglow 1.2s infinite}
+@keyframes spotglow{50%{outline-color:rgba(242,107,79,.35)}}
