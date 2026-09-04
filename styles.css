@@ -278,3 +278,10 @@ footer{padding:64px 0 44px;border-top:1px solid var(--line)}
 /* compact right-aligned filters */
 .search-bar{justify-content:flex-end;margin-top:10px}
 .search-bar select.field{flex:0 0 auto;min-width:0;width:auto;padding:8px 34px 8px 14px;font-size:.85rem}
+
+/* single-page cinematic tour */
+body[data-tourfull] nav.top{display:none}
+.tour-splash{position:fixed;inset:0;z-index:200;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:opacity .6s}
+.tour-splash .intro-logo{font-size:clamp(6rem,18vw,11rem);color:var(--cream)}
+.tour-scene{min-height:100vh;display:flex;align-items:center;padding:60px 0;scroll-margin-top:0}
+.tour-finale{background:radial-gradient(ellipse at 50% 60%,rgba(242,107,79,.15),var(--ink) 70%)}

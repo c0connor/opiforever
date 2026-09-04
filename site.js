@@ -106,7 +106,7 @@
 /* ---------- 4. Marketplace filters: chips + search + BPM + key + genres ---------- */
 (function(){
   var grid=document.getElementById('marketGrid');
-  if(!grid) return;
+  if(!grid || document.body.getAttribute('data-tourfull')==='1') return;
   var chips=document.querySelectorAll('.chip-btn[data-filter]');
   var q=null, fb=document.getElementById('fBpm'), fk=document.getElementById('fKey');
   var genreRow=null, countEl=document.getElementById('fCount');
@@ -185,7 +185,7 @@
 /* ---------- 5. Opi Voice — live conversion (mic/upload -> api.opiforever.com) ---------- */
 (function(){
   var recBtn=document.getElementById('vtRecord');
-  if(!recBtn) return;
+  if(!recBtn || document.body.getAttribute('data-tourfull')==='1') return;
   var API='https://api.opiforever.com';
   var idle=document.getElementById('vtIdle'), rec=document.getElementById('vtRec'), got=document.getElementById('vtGot');
   var timerEl=document.getElementById('vtTimer'), player=document.getElementById('vtPlayer'), nameEl=document.getElementById('vtName');
@@ -327,9 +327,15 @@
       cues:[[109.75,'#sellTrack'],[118.3,'#sellCredits'],[124.7,'#sellOffer'],[137.35,'.pledges'],[152.1,'.agree']],
       acts:[[110.1,'ghosttype'],[118.6,'press','.pledges .pledge:nth-child(1)'],[125.2,'pricedemo'],[137.6,'pledgewave'],[152.3,'checkagree'],[160.0,'reset']]}
   };
+  SEGMENTS.full={start:0.0, seam:999999, nextPage:null,
+    cues:SEGMENTS.voice.cues.concat(SEGMENTS.market.cues, SEGMENTS.sell.cues),
+    acts:SEGMENTS.voice.acts.concat(SEGMENTS.market.acts, SEGMENTS.sell.acts)};
+  var fullMode=document.body.getAttribute('data-tourfull')==='1';
   var btn=document.getElementById('tourBtn');
-  if(!btn) return;
-  var segName=btn.getAttribute('data-tour'); segName = segName==='voice'?'voice':(segName==='sell'?'sell':'market');
+  if(!btn && !fullMode) return;
+  if(fullMode && !btn){ btn=document.createElement('button'); btn.id='tourBtn'; btn.setAttribute('data-tour','full'); btn.style.display='none'; document.body.appendChild(btn); }
+  var raw=btn.getAttribute('data-tour');
+  var segName=(raw==='voice'||raw==='sell'||raw==='full')?raw:'market';
   var seg=SEGMENTS[segName], audio=null, spotted=null, xBtn=null, navved=false;
   function clearSpot(){ if(spotted){spotted.classList.remove('tour-spot'); spotted=null;} }
   var demoTouched=false;
@@ -392,7 +398,7 @@
       }
     });
     audio.addEventListener('ended',function(){ clearSpot(); act('reset'); showX(false); audio=null; try{ sessionStorage.removeItem('opi-tour-t'); sessionStorage.removeItem('opi-tour-chain'); sessionStorage.removeItem('opi-tour'); }catch(e){} if(seg.nextPage===null){ setLabel('\u2728 Welcome \u2014 taking you in\u2026'); setTimeout(function(){ window.location.href='voice.html'; },1400); } else { setLabel('\u25b6 Let Opi show you around'); } });
-    audio.play().then(function(){ setLabel('\u23f8 Pause the tour'); showX(true); }).catch(function(){ audio=null; btn.classList.add('pulse'); });
+    audio.play().then(function(){ setLabel('\u23f8 Pause the tour'); showX(true); var sp=document.getElementById('tourSplash'); if(sp){ sp.style.opacity='0'; setTimeout(function(){ sp.style.display='none'; },600); } }).catch(function(){ audio=null; btn.classList.add('pulse'); });
   }
   btn.addEventListener('click',function(){
     btn.classList.remove('pulse');
@@ -403,7 +409,7 @@
   try{
     var t=parseFloat(sessionStorage.getItem('opi-tour-t'));
     var chained=sessionStorage.getItem('opi-tour-chain')==='1';
-    var fromLanding=segName==='voice' && sessionStorage.getItem('opi-tour')==='1';
+    var fromLanding=(segName==='voice'||segName==='full') && sessionStorage.getItem('opi-tour')==='1';
     if(fromLanding) sessionStorage.removeItem('opi-tour');
     if(chained) sessionStorage.removeItem('opi-tour-chain');
     if(fromLanding){

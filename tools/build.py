@@ -20,7 +20,7 @@ FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="p
 
 def esc(s): return html.escape(str(s), quote=True)
 
-def shell(title, body, depth=0, active="", nav=True, desc="Premium EDM toplines, licensed straight from the artist."):
+def shell(title, body, depth=0, active="", nav=True, desc="Premium EDM toplines, licensed straight from the artist.", body_attr=""):
     p = "../" * depth
     navhtml = ""
     if nav:
@@ -35,7 +35,7 @@ def shell(title, body, depth=0, active="", nav=True, desc="Premium EDM toplines,
     nowplaying = '<div class="now-playing"><button class="play np-toggle" aria-label="Pause">❚❚</button><span class="np-title"></span><button class="np-close" style="background:none;border:none;color:var(--lav);cursor:pointer;font-size:1rem" aria-label="Close">✕</button></div>'
     return ('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">'
             '<title>%s</title><meta name="description" content="%s"><meta name="robots" content="noindex, nofollow">%s'
-            '<link rel="stylesheet" href="%sstyles.css?v='+V+'"></head><body>%s%s%s%s<script src="%ssite.js?v='+V+'"></script></body></html>'
+            '<link rel="stylesheet" href="%sstyles.css?v='+V+'"></head><body'+body_attr+'>%s%s%s%s<script src="%ssite.js?v='+V+'"></script></body></html>'
             ) % (esc(title), esc(desc), FONTS, p, navhtml, body, footer if nav else "", nowplaying if nav else "", p)
 
 # ---------- shared blocks ----------
@@ -70,7 +70,7 @@ index_body = """<div class="intro">
 <div class="muted" style="margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase">entering\u2026</div>
 </div>
 </div>
-<script>try{sessionStorage.setItem('opi-tour','1');}catch(e){}window.__opiSkipGate=1;setTimeout(function(){location.replace('voice.html');},2400);</script>"""
+<script>try{sessionStorage.setItem('opi-tour','1');}catch(e){}window.__opiSkipGate=1;setTimeout(function(){location.replace('tour.html');},2400);</script>"""
 open(os.path.join(ROOT, "index.html"), "w").write(shell("Opi — Toplines from a world of her own", index_body, nav=False))
 
 # ---------- 2. vocals (marketplace) ----------
@@ -138,8 +138,8 @@ voice_body = """<div class="wrap page-head"><div class="kicker">The voice, live<
   </div>
   <div class="vtool-stage" id="vtStage">
     <div class="vtool-idle" id="vtIdle">
-      <button class="btn big" id="vtRecord">🎤 Record</button>
-      <label class="btn big ghost" style="cursor:pointer">📁 Upload a vocal<input type="file" id="vtFile" accept="audio/*" hidden></label>
+      <button class="btn big" id="vtRecord">\U0001F3A4 Record</button>
+      <label class="btn big ghost" style="cursor:pointer">\U0001F4C1 Upload a vocal<input type="file" id="vtFile" accept="audio/*" hidden></label>
     </div>
     <div class="vtool-rec" id="vtRec" hidden>
       <div class="rec-dot"></div><span id="vtTimer" class="mono">0:00</span>
@@ -164,7 +164,7 @@ voice_body = """<div class="wrap page-head"><div class="kicker">The voice, live<
       </div>
     </div>
   </div>
-  <div class="form-note" style="margin-top:14px">🔒 The pact applies here: your audio is converted on an ephemeral renewable-powered server and deleted before the reply reaches you. Never stored, never trained on.</div>
+  <div class="form-note" style="margin-top:14px">\U0001F512 The pact applies here: your audio is converted on an ephemeral renewable-powered server and deleted before the reply reaches you. Never stored, never trained on.</div>
 </div>
 <div class="vtool-tips muted">Tips for the best conversion: dry vocal (no reverb) · tune it first · one voice at a time · headphones stop mic bleed.</div>
 </div></section>
@@ -178,8 +178,8 @@ voice_body = """<div class="wrap page-head"><div class="kicker">The voice, live<
 </div></div></section>
 <section style="padding-top:0"><div class="wrap"><div class="kicker">The pact</div><h2>Three promises, in writing.</h2><p class="section-sub">Artist-owned AI means the rules are the artist\'s — and they cut both ways.</p>
 <div class="pledges">
-<div class="pledge"><div class="ico">🎤</div><h3>I own my voice</h3><p>The model is trained on my recordings, owned by me, and hosted by me. Nobody licenses my voice out from under me — and it never leaves the server.</p></div>
-<div class="pledge"><div class="ico">🔒</div><h3>Your uploads are yours</h3><p>Anything you record or upload is processed, delivered, and deleted. Never used to train, tune, or improve any model. Not analyzed. Not shared.</p></div>
+<div class="pledge"><div class="ico">\U0001F3A4</div><h3>I own my voice</h3><p>The model is trained on my recordings, owned by me, and hosted by me. Nobody licenses my voice out from under me — and it never leaves the server.</p></div>
+<div class="pledge"><div class="ico">\U0001F512</div><h3>Your uploads are yours</h3><p>Anything you record or upload is processed, delivered, and deleted. Never used to train, tune, or improve any model. Not analyzed. Not shared.</p></div>
 <div class="pledge"><div class="ico">🤝</div><h3>Nobody trains on anybody</h3><p>You don\'t train on my outputs; I don\'t train on your inputs. Written into the terms, and built into the code — deleted data can\'t be trained on.</p></div>
 </div></div></section>
 <section style="padding-top:0"><div class="wrap narrow faq"><div class="kicker">Questions</div><h2 style="font-size:1.8rem">How it works</h2>
@@ -312,11 +312,55 @@ submit_body = """<div class="wrap page-head"><div class="kicker">Sell on the mar
 <div style="margin-top:20px"><button class="btn big" type="submit">Submit for screening</button></div>
 </form>
 <div class="pledges" style="margin-top:56px">
-<div class="pledge"><div class="ico">🖋️</div><h3>You keep your publishing</h3><p>You wrote it — the writing stays yours. Your splits go in the buyer's contract exactly as you set them here.</p></div>
-<div class="pledge"><div class="ico">💰</div><h3>You set the price</h3><p>Your vocal, your number. The marketplace takes 10% per sale; the rest is yours.</p></div>
-<div class="pledge"><div class="ico">🔍</div><h3>Everything is screened</h3><p>Quality and content standards protect every seller here. Nothing lists without approval.</p></div>
+<div class="pledge"><div class="ico">\U0001F58B️</div><h3>You keep your publishing</h3><p>You wrote it — the writing stays yours. Your splits go in the buyer's contract exactly as you set them here.</p></div>
+<div class="pledge"><div class="ico">\U0001F4B0</div><h3>You set the price</h3><p>Your vocal, your number. The marketplace takes 10% per sale; the rest is yours.</p></div>
+<div class="pledge"><div class="ico">\U0001F50D</div><h3>Everything is screened</h3><p>Quality and content standards protect every seller here. Nothing lists without approval.</p></div>
 </div>
 </div></section>"""
 open(os.path.join(ROOT, "submit.html"), "w").write(shell("Sell your Opi topline", submit_body, active="vocals"))
+
+
+# ---------- 8. tour.html — single-page cinematic tour (seamless on mobile) ----------
+featured=[t for t in TRACKS][:6]
+tour_cards="".join(card(t) for t in featured)
+tour_body = """<div class="tour-splash" id="tourSplash"><div class="intro-logo blackletter">Opi</div><div class="muted" style="font-family:'JetBrains Mono',monospace;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;margin-top:14px">the tour begins\u2026</div></div>
+
+<section class="tour-scene"><div class="wrap narrow"><div class="kicker">Opi Voice</div><h2 style="margin-bottom:26px">Sing your idea. Hear it in my voice.</h2>
+<div class="vtool">
+  <div class="vtool-modes"><span class="vmode active">Simple</span><span class="vmode">Pro</span></div>
+  <div class="vtool-stage">
+    <div class="vtool-idle" id="vtIdle"><button class="btn big" id="vtRecord">\U0001F3A4 Record</button><label class="btn big ghost">\U0001F4C1 Upload a vocal</label></div>
+    <div class="vtool-got" id="vtGot" hidden><div class="muted" id="vtName" style="margin-bottom:10px"></div>
+      <div class="row" style="display:flex;gap:12px;margin-top:6px;flex-wrap:wrap"><button class="btn big" id="vtConvert">Convert to Opi \u2728</button></div>
+      <div class="vtool-notice" id="vtNotice" hidden><div id="vtStatus" class="mono" style="font-size:.9rem"></div></div>
+    </div>
+  </div>
+  <div class="form-note" style="margin-top:14px">\U0001F512 The pact applies here: your audio is converted on an ephemeral renewable-powered server and deleted before the reply reaches you. Never stored, never trained on.</div>
+</div>
+<div class="vtool-tips muted">Tips for the best conversion: dry vocal (no reverb) \u00b7 tune it first \u00b7 one voice at a time \u00b7 headphones stop mic bleed.</div>
+</div></section>
+
+<section class="tour-scene"><div class="wrap"><div class="kicker">The marketplace</div><h2 style="margin-bottom:6px">Vocals sung in my voice.</h2>
+<div class="filter-bar" style="margin-bottom:20px"><button class="chip-btn active">All</button><button class="chip-btn">Non-exclusive</button><button class="chip-btn">Exclusive</button></div>
+<div class="grid" id="marketGrid">__CARDS__</div>
+<div class="steps" style="margin-top:34px">
+<div class="step"><div class="num">1</div><h3>Pick your vocal</h3><p>Preview every topline, full stems included.</p></div>
+<div class="step"><div class="num">2</div><h3>Sign at checkout</h3><p>Type your name, agree, pay \u2014 signed PDF to both of us.</p></div>
+<div class="step"><div class="num">3</div><h3>Build &amp; release</h3><p>Out as <em>feat. Opi</em>. We each keep 50%.</p></div>
+</div></div></section>
+
+<section class="tour-scene"><div class="wrap narrow"><div class="kicker">Sell on the marketplace</div><h2 style="margin-bottom:22px">Wrote something with my voice? Sell it here.</h2>
+<div class="submit-form">
+<h3>The track</h3><div class="form-grid" id="sellTrack"><label>Title<input class="field" type="text" placeholder="e.g. Midnight Run"></label><label>BPM<input class="field" type="number" placeholder="128"></label><label>Key<input class="field" type="text" placeholder="F minor"></label><label>Genre<input class="field" type="text" placeholder="melodic house"></label></div>
+<h3>Credits &amp; splits</h3><div class="form-grid" id="sellCredits"><label>Songwriters<input class="field" type="text" placeholder="every writer"></label><label>Publishing you keep (%)<input class="field" type="number" placeholder="100"></label></div>
+<h3>The offer</h3><div class="form-grid" id="sellOffer"><label>Your price (USD)<input class="field" type="number" placeholder="80"></label><label>License<span class="radio-row"><label class="radio"><input type="radio" name="lt" checked> Non-exclusive</label><label class="radio"><input type="radio" name="lt"> Exclusive</label></span></label></div>
+<div class="pledges" style="margin-top:26px"><div class="pledge"><div class="ico">\U0001F58B\ufe0f</div><h3>You keep your publishing</h3><p>You wrote it \u2014 that never changes.</p></div><div class="pledge"><div class="ico">\U0001F4B0</div><h3>You set the price</h3><p>10% flat, founding sellers keep that rate forever.</p></div><div class="pledge"><div class="ico">\U0001F50D</div><h3>Everything is screened</h3><p>Nothing lists without a listen.</p></div></div>
+<label class="agree" style="margin-top:22px"><input type="checkbox"> I understand submissions are screened, sales run under a signed license with a 10% fee, and content standards apply.</label>
+<div style="margin-top:18px"><button class="btn big" type="button">Submit for screening</button></div>
+</div></div></section>
+
+<section class="tour-scene tour-finale"><div class="wrap narrow" style="text-align:center"><div class="intro-logo blackletter" style="font-size:clamp(4rem,12vw,8rem)">Opi</div><div class="intro-tag" style="margin-top:10px">Welcome to the world of Opi.</div><a class="btn big" href="voice.html" style="margin-top:28px">Enter and play \u2192</a></div></section>
+""".replace("__CARDS__", tour_cards)
+open(os.path.join(ROOT, "tour.html"), "w").write(shell("Opi \u2014 the tour", tour_body, active="voice", body_attr=' data-tourfull="1"'))
 
 print("built: index.html, vocals.html, voice.html, about.html, vocal/*.html (%d), license.html, submit.html" % len(TRACKS))
