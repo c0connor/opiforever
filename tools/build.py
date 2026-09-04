@@ -62,15 +62,15 @@ STEPS = '''<section><div class="wrap"><div class="kicker">How it works</div><h2>
 </div></div></section>'''
 
 # ---------- 1. index (intro) ----------
-index_body = '''<div class="intro">
+index_body = """<div class="intro">
 <video autoplay muted loop playsinline poster="assets/hero.jpg"><source src="assets/intro.mp4" type="video/mp4"></video>
 <div class="intro-inner">
 <div class="intro-logo blackletter">Opi</div>
 <div class="intro-tag">Sing your idea. Hear it in my voice.</div>
-<div class="intro-ctas"><a class="btn big tour-enter" href="voice.html">✨ Enter — Opi shows you around</a><a class="btn big ghost" href="voice.html">Enter quietly</a></div>
+<div class="muted" style="margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase">entering\u2026</div>
 </div>
-<div class="intro-links"><a href="vocals.html">Marketplace</a><a href="voice.html">Opi Voice</a><a href="about.html">About</a></div>
-</div>'''
+</div>
+<script>try{sessionStorage.setItem('opi-tour','1');}catch(e){}window.__opiSkipGate=1;setTimeout(function(){location.replace('voice.html');},2400);</script>"""
 open(os.path.join(ROOT, "index.html"), "w").write(shell("Opi — Toplines from a world of her own", index_body, nav=False))
 
 # ---------- 2. vocals (marketplace) ----------
