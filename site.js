@@ -310,27 +310,27 @@
   });
 })();
 
-/* ---------- 6. Guided tours: pause/resume + chained journey (voice → market → sell) ---------- */
+/* ---------- 6. Guided tour: ONE continuous track across pages (seams hidden in her silent gaps) ---------- */
 (function(){
-  var TOURS={
-    voice:{audio:'assets/tour/tour-voice.m4a',nextPage:'vocals.html',nextTour:'market',
+  // Absolute timeline (seconds) into tour-full.m4a. seam = navigate here; cues fire within [start,seam].
+  var FULL='assets/tour/tour-full.m4a';
+  var SEGMENTS={
+    voice:  {start:0.0,   seam:52.0,  nextPage:'vocals.html',
       cues:[[4.75,'#vtIdle'],[15.15,'.vtool-tips'],[25.4,'#vtNotice'],[37.55,'.vtool .form-note']],
       acts:[[4.9,'press','#vtRecord'],[5.6,'recpulse','#vtRecord'],[8.8,'ghostfile'],[11.6,'gotstate'],
             [25.5,'press','#vtConvert'],[26.4,'status','Opi is singing\u2026 (demo)'],
             [33.5,'status','Done \u2728 \u2014 your real take comes back right here'],[48.2,'reset']]},
-    market:{audio:'assets/tour/tour-market-buy.m4a',nextPage:'submit.html',nextTour:'sell',
-      cues:[[5.85,'.card .play'],[9.4,'.card .card-body'],[19.45,'.steps'],[40.3,'.filter-bar'],[48.25,'nav.top a[href$="voice.html"]']],
-      acts:[[6.0,'press','.card .play'],[6.4,'pulse','.card .play'],[9.6,'cardpop','.card'],
-            [31.3,'confetti'],[40.5,'chipdance'],[48.4,'glitch','nav.top a[href$="voice.html"]']]},
-    sell:{audio:'assets/tour/tour-market-sell.m4a',
-      cues:[[3.75,'#sellTrack'],[12.3,'#sellCredits'],[18.7,'#sellOffer'],[31.35,'.pledges'],[46.1,'.agree']],
-      acts:[[4.1,'ghosttype'],[12.6,'press','.pledges .pledge:nth-child(1)'],
-            [19.2,'pricedemo'],[31.6,'pledgewave'],[46.3,'checkagree'],[52.5,'reset']]}
+    market: {start:52.0,  seam:107.0, nextPage:'submit.html',
+      cues:[[57.85,'.card .play'],[61.4,'.card .card-body'],[71.45,'.steps'],[92.3,'.filter-bar'],[100.25,'nav.top a[href$="voice.html"]']],
+      acts:[[58.0,'press','.card .play'],[58.4,'pulse','.card .play'],[61.6,'cardpop','.card'],[83.3,'confetti'],[92.5,'chipdance'],[100.4,'glitch','nav.top a[href$="voice.html"]']]},
+    sell:   {start:107.0, seam:9999,  nextPage:null,
+      cues:[[110.75,'#sellTrack'],[119.3,'#sellCredits'],[125.7,'#sellOffer'],[138.35,'.pledges'],[153.1,'.agree']],
+      acts:[[111.1,'ghosttype'],[119.6,'press','.pledges .pledge:nth-child(1)'],[126.2,'pricedemo'],[138.6,'pledgewave'],[153.3,'checkagree'],[160.0,'reset']]}
   };
   var btn=document.getElementById('tourBtn');
   if(!btn) return;
-  var tourName=btn.getAttribute('data-tour'), tour=TOURS[tourName];
-  var audio=null, spotted=null, xBtn=null;
+  var segName=btn.getAttribute('data-tour'); segName = segName==='voice'?'voice':(segName==='sell'?'sell':'market');
+  var seg=SEGMENTS[segName], audio=null, spotted=null, xBtn=null, navved=false;
   function clearSpot(){ if(spotted){spotted.classList.remove('tour-spot'); spotted=null;} }
   var demoTouched=false;
   function act(kind, sel){
@@ -338,112 +338,79 @@
         notice=document.getElementById('vtNotice'), st=document.getElementById('vtStatus'),
         name=document.getElementById('vtName'), result=document.getElementById('vtResult');
     if(kind==='press'){ var el=document.querySelector(sel); if(el){ el.classList.remove('tour-press'); void el.offsetWidth; el.classList.add('tour-press'); } }
-    if(kind==='recpulse'){ var el2=document.querySelector(sel); if(el2){ el2.classList.add('tour-recpulse'); setTimeout(function(){el2.classList.remove('tour-recpulse');},2600); } }
+    if(kind==='recpulse'||kind==='pulse'){ var e2=document.querySelector(sel); if(e2){ e2.classList.add('tour-recpulse'); setTimeout(function(){e2.classList.remove('tour-recpulse');},2400); } }
+    if(kind==='cardpop'){ var cp=document.querySelector(sel); if(cp){ cp.classList.remove('tour-cardpop'); void cp.offsetWidth; cp.classList.add('tour-cardpop'); } }
     if(kind==='ghostfile'){ var card=document.querySelector('.vtool'); if(card){ var gf=document.createElement('div'); gf.className='ghost-file'; gf.textContent='\ud83c\udfb5 my-take.wav'; gf.style.top='90px'; gf.style.right='60px'; card.appendChild(gf); setTimeout(function(){gf.remove();},2300); } }
     if(kind==='gotstate' && idle && got){ demoTouched=true; idle.hidden=true; got.hidden=false; if(name) name.textContent='your take \u00b7 0:23 (demo)'; if(result) result.hidden=true; }
     if(kind==='status' && st){ demoTouched=true; st.setAttribute('data-tour-demo','1'); if(notice) notice.hidden=false; st.textContent=sel; }
-    if(kind==='pulse'){ var pe=document.querySelector(sel); if(pe){ pe.classList.add('tour-recpulse'); setTimeout(function(){pe.classList.remove('tour-recpulse');},2400); } }
-    if(kind==='cardpop'){ var cp=document.querySelector(sel); if(cp){ cp.classList.remove('tour-cardpop'); void cp.offsetWidth; cp.classList.add('tour-cardpop'); } }
     if(kind==='confetti'){ var cc=document.createElement('div'); cc.className='tour-confetti';
       for(var ci=0;ci<70;ci++){ var pi=document.createElement('i');
-        pi.style.setProperty('--dx',((Math.random()*2-1)*45)+'vw');
-        pi.style.setProperty('--dy',(Math.random()*55+30)+'vh');
-        pi.style.setProperty('--r',(Math.random()*720-360)+'deg');
-        pi.style.left='50%'; pi.style.top='18%';
-        pi.style.background=['#f26b4f','#a8a4ce','#f4f0e6','#e0392e'][ci%4];
-        pi.style.animationDelay=(Math.random()*0.35)+'s'; cc.appendChild(pi); }
+        pi.style.setProperty('--dx',((Math.random()*2-1)*45)+'vw'); pi.style.setProperty('--dy',(Math.random()*55+30)+'vh'); pi.style.setProperty('--r',(Math.random()*720-360)+'deg');
+        pi.style.left='50%'; pi.style.top='18%'; pi.style.background=['#f26b4f','#a8a4ce','#f4f0e6','#e0392e'][ci%4]; pi.style.animationDelay=(Math.random()*0.35)+'s'; cc.appendChild(pi); }
       document.body.appendChild(cc); setTimeout(function(){cc.remove();},2800); }
-    if(kind==='chipdance'){ document.querySelectorAll('.chip-btn').forEach(function(ch,i){
-        setTimeout(function(){ ch.classList.remove('tour-press'); void ch.offsetWidth; ch.classList.add('tour-press'); }, i*350); }); }
+    if(kind==='chipdance'){ document.querySelectorAll('.chip-btn').forEach(function(ch,i){ setTimeout(function(){ ch.classList.remove('tour-press'); void ch.offsetWidth; ch.classList.add('tour-press'); }, i*350); }); }
     if(kind==='glitch'){ var gl=document.querySelector(sel); if(gl){ gl.classList.add('tour-glitch'); setTimeout(function(){gl.classList.remove('tour-glitch');},2200); } }
-    if(kind==='ghosttype'){ demoTouched=true;
-      var fields=[['#sellTrack input:nth-of-type(1)','Midnight Run'],['#sellTrack label:nth-child(2) input','128'],['#sellTrack label:nth-child(3) input','F minor']];
-      var ins=document.querySelectorAll('#sellTrack input'); var texts=['Midnight Run','128','F minor'];
-      ins.forEach(function(inp,i){ if(i>2||!texts[i]) return; inp.setAttribute('data-tour-demo','1');
-        var t=texts[i], k=0; setTimeout(function type(){ if(k<=t.length){ inp.value=t.slice(0,k); k++; setTimeout(type,55);} }, i*1400); }); }
+    if(kind==='ghosttype'){ demoTouched=true; var ins=document.querySelectorAll('#sellTrack input'); var texts=['Midnight Run','128','F minor'];
+      ins.forEach(function(inp,i){ if(i>2||!texts[i]) return; inp.setAttribute('data-tour-demo','1'); var t=texts[i], k=0; setTimeout(function type(){ if(k<=t.length){ inp.value=t.slice(0,k); k++; setTimeout(type,55);} }, i*1400); }); }
     if(kind==='pricedemo'){ demoTouched=true; var pr=document.querySelector('#sellOffer input[type=number]');
       if(pr){ pr.setAttribute('data-tour-demo','1'); var v=0; var iv=setInterval(function(){ v+=25; pr.value=v; if(v>=300){ clearInterval(iv);
         var off=document.getElementById('sellOffer'); if(off){ off.style.position='relative'; var gc=document.createElement('div'); gc.className='ghost-chip'; gc.textContent='\u2212 10% \u2192 you keep $270'; gc.style.top='-14px'; gc.style.right='10px'; off.appendChild(gc); setTimeout(function(){gc.remove();},3100); } } },70); } }
-    if(kind==='pledgewave'){ document.querySelectorAll('.pledges .pledge').forEach(function(pl,i){
-        setTimeout(function(){ pl.classList.remove('tour-press'); void pl.offsetWidth; pl.classList.add('tour-press'); }, i*450); }); }
-    if(kind==='checkagree'){ demoTouched=true; var ag=document.querySelector('.agree input'); if(ag){ ag.setAttribute('data-tour-demo','1'); ag.checked=true; }
-      var sb=document.querySelector('.submit-form button[type=submit]'); if(sb){ sb.classList.remove('tour-press'); void sb.offsetWidth; sb.classList.add('tour-press'); } }
+    if(kind==='pledgewave'){ document.querySelectorAll('.pledges .pledge').forEach(function(pl,i){ setTimeout(function(){ pl.classList.remove('tour-press'); void pl.offsetWidth; pl.classList.add('tour-press'); }, i*450); }); }
+    if(kind==='checkagree'){ demoTouched=true; var ag=document.querySelector('.agree input'); if(ag){ ag.setAttribute('data-tour-demo','1'); ag.checked=true; } var sb=document.querySelector('.submit-form button[type=submit]'); if(sb){ sb.classList.remove('tour-press'); void sb.offsetWidth; sb.classList.add('tour-press'); } }
     if(kind==='reset'){ if(demoTouched){ if(idle) idle.hidden=false; if(got) got.hidden=true; if(notice) notice.hidden=true; if(st){ st.textContent=''; st.removeAttribute('data-tour-demo'); }
-      document.querySelectorAll('input[data-tour-demo]').forEach(function(di){ if(di.type==='checkbox') di.checked=false; else di.value=''; di.removeAttribute('data-tour-demo'); });
-      demoTouched=false; } }
+      document.querySelectorAll('input[data-tour-demo]').forEach(function(di){ if(di.type==='checkbox') di.checked=false; else di.value=''; di.removeAttribute('data-tour-demo'); }); demoTouched=false; } }
   }
   function setLabel(t){ btn.textContent=t; }
   function showX(show){
-    if(show && !xBtn){ xBtn=document.createElement('button'); xBtn.className='tour-pill'; xBtn.style.marginLeft='10px'; xBtn.textContent='\u2715 End tour';
-      xBtn.addEventListener('click',endTour); btn.parentNode.insertBefore(xBtn, btn.nextSibling); }
+    if(show && !xBtn){ xBtn=document.createElement('button'); xBtn.className='tour-pill'; xBtn.style.marginLeft='10px'; xBtn.textContent='\u2715 End tour'; xBtn.addEventListener('click',endTour); btn.parentNode.insertBefore(xBtn, btn.nextSibling); }
     if(!show && xBtn){ xBtn.remove(); xBtn=null; }
   }
-  document.addEventListener('opi-audio',function(e){
-    if(e.detail!=='tour' && audio && !audio.paused){ audio.pause(); setLabel('\u25b6 Resume the tour'); }
-  });
-  function endTour(){ if(audio){audio.pause(); audio=null;} clearSpot(); act('reset'); showX(false); setLabel('\u25b6 Let Opi show you around');
-    try{ sessionStorage.removeItem('opi-tour-chain'); }catch(e){} }
-  function finished(){
-    clearSpot(); act('reset'); showX(false); audio=null;
-    if(tour.nextPage && tour.nextTour){
-      setLabel('Next stop: '+(tour.nextTour==='market'?'the marketplace':'selling')+' \u2192');
-      try{ sessionStorage.setItem('opi-tour-chain', tour.nextTour); }catch(e){}
-      setTimeout(function(){ window.location.href=tour.nextPage; },1400);
-    } else {
-      setLabel('\u2728 That\u2019s the tour \u2014 the stage is yours');
-      setTimeout(function(){ setLabel('\u25b6 Let Opi show you around'); },5000);
-    }
-  }
+  function endTour(){ if(audio){audio.pause(); audio=null;} clearSpot(); act('reset'); showX(false); setLabel('\u25b6 Let Opi show you around'); try{ sessionStorage.removeItem('opi-tour-t'); sessionStorage.removeItem('opi-tour-chain'); }catch(e){} }
   var canAct=false, nextCue=0, nextAct=0;
-  function begin(){
-    if(tourName==='voice'){ var gotEl=document.getElementById('vtGot'); canAct=!!(tour.acts && gotEl && gotEl.hidden); }
-    else if(tourName==='sell'){ var ti=document.querySelector('#sellTrack input'); canAct=!!(tour.acts && ti && !ti.value); }
-    else { canAct=!!tour.acts; }
-    audio=new Audio(tour.audio); nextCue=0; nextAct=0;
+  function begin(resumeAt){
+    if(segName==='voice'){ var gotEl=document.getElementById('vtGot'); canAct=!!(seg.acts && gotEl && gotEl.hidden); }
+    else if(segName==='sell'){ var ti=document.querySelector('#sellTrack input'); canAct=!!(seg.acts && ti && !ti.value); }
+    else canAct=!!seg.acts;
+    audio=new Audio(FULL); nextCue=0; nextAct=0; navved=false;
+    audio.addEventListener('loadedmetadata',function(){ try{ audio.currentTime=(resumeAt!=null?resumeAt:seg.start); }catch(e){} });
     audio.addEventListener('timeupdate',function(){
       if(!audio) return;
-      while(canAct && tour.acts && nextAct<tour.acts.length && audio.currentTime>=tour.acts[nextAct][0]){
-        act(tour.acts[nextAct][1], tour.acts[nextAct][2]); nextAct++;
-      }
-      while(nextCue<tour.cues.length && audio.currentTime>=tour.cues[nextCue][0]){
-        clearSpot();
-        var el=document.querySelector(tour.cues[nextCue][1]);
+      var ct=audio.currentTime;
+      try{ sessionStorage.setItem('opi-tour-t', String(ct)); }catch(e){}
+      while(canAct && seg.acts && nextAct<seg.acts.length && ct>=seg.acts[nextAct][0]){ act(seg.acts[nextAct][1], seg.acts[nextAct][2]); nextAct++; }
+      while(nextCue<seg.cues.length && ct>=seg.cues[nextCue][0]){
+        clearSpot(); var el=document.querySelector(seg.cues[nextCue][1]);
         if(el){ el.classList.add('tour-spot'); el.scrollIntoView({behavior:'smooth',block:'center'}); spotted=el; }
         nextCue++;
       }
+      // hand off to next page during the silent gap
+      if(!navved && seg.nextPage && ct>=seg.seam){
+        navved=true; clearSpot(); act('reset');
+        try{ sessionStorage.setItem('opi-tour-t', String(seg.seam)); sessionStorage.setItem('opi-tour-chain','1'); }catch(e){}
+        window.location.href=seg.nextPage;
+      }
     });
-    audio.addEventListener('ended',finished);
-    audio.play().then(function(){ setLabel('\u23f8 Pause the tour'); showX(true);
-        try{ document.dispatchEvent(new CustomEvent('opi-audio',{detail:'tour'})); }catch(e){} })
-      .catch(function(){ audio=null; btn.classList.add('pulse'); });
+    audio.addEventListener('ended',function(){ clearSpot(); act('reset'); showX(false); audio=null; setLabel('\u2728 That\u2019s the tour \u2014 the stage is yours'); try{ sessionStorage.removeItem('opi-tour-t'); }catch(e){} setTimeout(function(){ setLabel('\u25b6 Let Opi show you around'); },5000); });
+    audio.play().then(function(){ setLabel('\u23f8 Pause the tour'); showX(true); }).catch(function(){ audio=null; btn.classList.add('pulse'); });
   }
   btn.addEventListener('click',function(){
     btn.classList.remove('pulse');
-    if(!audio){ begin(); return; }
-    if(audio.paused){ audio.play(); setLabel('\u23f8 Pause the tour');
-      try{ document.dispatchEvent(new CustomEvent('opi-audio',{detail:'tour'})); }catch(e){} }
-    else { audio.pause(); setLabel('\u25b6 Resume the tour'); }
+    if(!audio){ begin(seg.start); return; }
+    if(audio.paused){ audio.play(); setLabel('\u23f8 Pause the tour'); } else { audio.pause(); setLabel('\u25b6 Resume the tour'); }
   });
-  // auto-start: landing door (voice) or chained arrival (market/sell)
+  // auto-start: fresh from landing (voice), or resumed hop from a previous page
   try{
-    var wantsVoice = tourName==='voice' && sessionStorage.getItem('opi-tour')==='1';
-    var chain = sessionStorage.getItem('opi-tour-chain');
-    var wantsChain = chain===tourName;
-    if(wantsVoice) sessionStorage.removeItem('opi-tour');
-    if(wantsChain) sessionStorage.removeItem('opi-tour-chain');
-    if(wantsVoice||wantsChain){
-      setTimeout(function(){
-        if(!document.getElementById('gate')) begin();
-        else btn.classList.add('pulse');
-      },600);
+    var t=parseFloat(sessionStorage.getItem('opi-tour-t'));
+    var chained=sessionStorage.getItem('opi-tour-chain')==='1';
+    var fromLanding=segName==='voice' && sessionStorage.getItem('opi-tour')==='1';
+    if(fromLanding) sessionStorage.removeItem('opi-tour');
+    if(chained) sessionStorage.removeItem('opi-tour-chain');
+    if(fromLanding || (chained && !isNaN(t) && t>=seg.start-1 && (seg.seam>t))){
+      setTimeout(function(){ if(!document.getElementById('gate')) begin(fromLanding?seg.start:t); else btn.classList.add('pulse'); },500);
     }
   }catch(e){}
 })();
-(function(){
-  document.querySelectorAll('.tour-enter').forEach(function(a){
-    a.addEventListener('click',function(){ try{ sessionStorage.setItem('opi-tour','1'); }catch(e){} });
-  });
-})();
+
 /* chimes: hook into the conversion status via tiny observer on the status element */
 (function(){
   var statusEl=document.getElementById('vtStatus');
