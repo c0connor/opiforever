@@ -316,13 +316,13 @@
   var FULL='assets/tour/tour-full.m4a';
   var SEGMENTS={
     voice:  {start:0.0,   seam:52.0,  nextPage:'vocals.html',
-      cues:[[4.75,'#vtIdle'],[15.15,'.vtool-tips'],[25.4,'#vtNotice'],[37.55,'.vtool .form-note']],
+      cues:[[4.75,'#vtIdle'],[15.15,'.vtool-tips'],[25.4,'#vtNotice'],[37.55,'.vtool .form-note','end']],
       acts:[[4.9,'press','#vtRecord'],[5.6,'recpulse','#vtRecord'],[8.8,'ghostfile'],[11.6,'gotstate'],
             [25.5,'press','#vtConvert'],[26.4,'status','Opi is singing\u2026 (demo)'],
             [33.5,'status','Done \u2728 \u2014 your real take comes back right here'],[48.2,'reset']]},
     market: {start:52.0,  seam:106.0, nextPage:'submit.html',
       cues:[[57.85,'.card .play'],[61.4,'.card .card-body'],[71.45,'.steps'],[92.3,'.filter-bar'],[100.25,'nav.top a[href$="voice.html"]']],
-      acts:[[58.0,'press','.card .play'],[58.4,'pulse','.card .play'],[61.6,'cardpop','.card'],[83.3,'confetti'],[92.5,'chipdance'],[100.4,'glitch','nav.top a[href$="voice.html"]']]},
+      acts:[[58.0,'press','.card .play'],[58.4,'pulse','.card .play'],[61.6,'cardwave'],[83.3,'confetti'],[92.5,'chipdance'],[100.4,'glitch','nav.top a[href$="voice.html"]']]},
     sell:   {start:106.0, seam:9999,  nextPage:null,
       cues:[[109.75,'#sellTrack'],[118.3,'#sellCredits'],[124.7,'#sellOffer'],[137.35,'.pledges'],[152.1,'.agree']],
       acts:[[110.1,'ghosttype'],[118.6,'press','.pledges .pledge:nth-child(1)'],[125.2,'pricedemo'],[137.6,'pledgewave'],[152.3,'checkagree'],[160.0,'reset']]}
@@ -340,6 +340,7 @@
     if(kind==='press'){ var el=document.querySelector(sel); if(el){ el.classList.remove('tour-press'); void el.offsetWidth; el.classList.add('tour-press'); } }
     if(kind==='recpulse'||kind==='pulse'){ var e2=document.querySelector(sel); if(e2){ e2.classList.add('tour-recpulse'); setTimeout(function(){e2.classList.remove('tour-recpulse');},2400); } }
     if(kind==='cardpop'){ var cp=document.querySelector(sel); if(cp){ cp.classList.remove('tour-cardpop'); void cp.offsetWidth; cp.classList.add('tour-cardpop'); } }
+    if(kind==='cardwave'){ var cds=document.querySelectorAll('#marketGrid .card'); cds.forEach(function(cd,i){ setTimeout(function(){ cd.classList.remove('tour-cardpop'); void cd.offsetWidth; cd.classList.add('tour-cardpop'); if(i===0) cd.scrollIntoView({behavior:'smooth',block:'center'}); }, i*900); }); }
     if(kind==='ghostfile'){ var card=document.querySelector('.vtool'); if(card){ var gf=document.createElement('div'); gf.className='ghost-file'; gf.textContent='\ud83c\udfb5 my-take.wav'; gf.style.top='90px'; gf.style.right='60px'; card.appendChild(gf); setTimeout(function(){gf.remove();},2300); } }
     if(kind==='gotstate' && idle && got){ demoTouched=true; idle.hidden=true; got.hidden=false; if(name) name.textContent='your take \u00b7 0:23 (demo)'; if(result) result.hidden=true; }
     if(kind==='status' && st){ demoTouched=true; st.setAttribute('data-tour-demo','1'); if(notice) notice.hidden=false; st.textContent=sel; }
@@ -380,7 +381,7 @@
       while(canAct && seg.acts && nextAct<seg.acts.length && ct>=seg.acts[nextAct][0]){ act(seg.acts[nextAct][1], seg.acts[nextAct][2]); nextAct++; }
       while(nextCue<seg.cues.length && ct>=seg.cues[nextCue][0]){
         clearSpot(); var el=document.querySelector(seg.cues[nextCue][1]);
-        if(el){ el.classList.add('tour-spot'); el.scrollIntoView({behavior:'smooth',block:'center'}); spotted=el; }
+        if(el){ el.classList.add('tour-spot'); el.scrollIntoView({behavior:'smooth',block:(seg.cues[nextCue][2]||'center')}); spotted=el; }
         nextCue++;
       }
       // hand off to next page during the silent gap

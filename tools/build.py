@@ -152,7 +152,7 @@ voice_body = """<div class="wrap page-head"><div class="kicker">The voice, live<
         <button class="btn big" id="vtConvert">Convert to Opi ✨</button>
         <button class="btn ghost" id="vtReset">Start over</button>
       </div>
-      <div class="vtool-invite"><input class="field" id="vtInvite" type="text" placeholder="beta invite code (optional — no code = 15-sec trial)" style="border-radius:12px;width:100%;margin-top:14px"></div>
+      <div class="vtool-invite"><input class="field" id="vtInvite" type="text" value="opi-beta-2026" placeholder="beta invite code (optional — no code = 15-sec trial)" style="border-radius:12px;width:100%;margin-top:14px"></div>
       <div class="vtool-notice" id="vtNotice" hidden>
         <div id="vtStatus" class="mono" style="font-size:.9rem"></div>
         <div id="vtResult" hidden style="margin-top:14px">
