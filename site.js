@@ -390,7 +390,7 @@
         window.location.href=seg.nextPage;
       }
     });
-    audio.addEventListener('ended',function(){ clearSpot(); act('reset'); showX(false); audio=null; setLabel('\u2728 That\u2019s the tour \u2014 the stage is yours'); try{ sessionStorage.removeItem('opi-tour-t'); }catch(e){} setTimeout(function(){ setLabel('\u25b6 Let Opi show you around'); },5000); });
+    audio.addEventListener('ended',function(){ clearSpot(); act('reset'); showX(false); audio=null; try{ sessionStorage.removeItem('opi-tour-t'); sessionStorage.removeItem('opi-tour-chain'); sessionStorage.removeItem('opi-tour'); }catch(e){} if(seg.nextPage===null){ setLabel('\u2728 Welcome \u2014 taking you in\u2026'); setTimeout(function(){ window.location.href='voice.html'; },1400); } else { setLabel('\u25b6 Let Opi show you around'); } });
     audio.play().then(function(){ setLabel('\u23f8 Pause the tour'); showX(true); }).catch(function(){ audio=null; btn.classList.add('pulse'); });
   }
   btn.addEventListener('click',function(){
