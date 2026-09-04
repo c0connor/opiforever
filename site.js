@@ -320,12 +320,12 @@
       acts:[[4.9,'press','#vtRecord'],[5.6,'recpulse','#vtRecord'],[8.8,'ghostfile'],[11.6,'gotstate'],
             [25.5,'press','#vtConvert'],[26.4,'status','Opi is singing\u2026 (demo)'],
             [33.5,'status','Done \u2728 \u2014 your real take comes back right here'],[48.2,'reset']]},
-    market: {start:52.0,  seam:107.0, nextPage:'submit.html',
+    market: {start:52.0,  seam:106.0, nextPage:'submit.html',
       cues:[[57.85,'.card .play'],[61.4,'.card .card-body'],[71.45,'.steps'],[92.3,'.filter-bar'],[100.25,'nav.top a[href$="voice.html"]']],
       acts:[[58.0,'press','.card .play'],[58.4,'pulse','.card .play'],[61.6,'cardpop','.card'],[83.3,'confetti'],[92.5,'chipdance'],[100.4,'glitch','nav.top a[href$="voice.html"]']]},
-    sell:   {start:107.0, seam:9999,  nextPage:null,
-      cues:[[110.75,'#sellTrack'],[119.3,'#sellCredits'],[125.7,'#sellOffer'],[138.35,'.pledges'],[153.1,'.agree']],
-      acts:[[111.1,'ghosttype'],[119.6,'press','.pledges .pledge:nth-child(1)'],[126.2,'pricedemo'],[138.6,'pledgewave'],[153.3,'checkagree'],[160.0,'reset']]}
+    sell:   {start:106.0, seam:9999,  nextPage:null,
+      cues:[[109.75,'#sellTrack'],[118.3,'#sellCredits'],[124.7,'#sellOffer'],[137.35,'.pledges'],[152.1,'.agree']],
+      acts:[[110.1,'ghosttype'],[118.6,'press','.pledges .pledge:nth-child(1)'],[125.2,'pricedemo'],[137.6,'pledgewave'],[152.3,'checkagree'],[160.0,'reset']]}
   };
   var btn=document.getElementById('tourBtn');
   if(!btn) return;
