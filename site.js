@@ -25,7 +25,7 @@
     for(i=0;i<8;i++) for(j=3;j+1;j--){ var b=(hash[i]>>(j*8))&255; res+=((b<16)?0:'')+b.toString(16); }
     return res;
   }
-  if(!remembered()){
+  if(!remembered() && !window.__opiSkipGate){
     root.classList.add('locked');
     var gate=document.createElement('div'); gate.id='gate';
     gate.innerHTML='<div><div class="gate-logo blackletter">Opi</div><div class="gate-sub">a world in progress</div>'+
@@ -35,7 +35,7 @@
     gate.querySelector('#gateForm').addEventListener('submit',function(e){
       e.preventDefault();
       var inp=gate.querySelector('#gatePass');
-      if(sha256(inp.value.trim().toLowerCase())===HASH){ remember(); gate.remove(); root.classList.remove('locked'); }
+      if(sha256(inp.value.trim().toLowerCase())===HASH){ remember(); gate.remove(); root.classList.remove('locked'); try{ document.dispatchEvent(new Event('opi-unlocked')); }catch(e){} }
       else{ inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake'); inp.value=''; }
     });
   }
@@ -405,8 +405,11 @@
     var fromLanding=segName==='voice' && sessionStorage.getItem('opi-tour')==='1';
     if(fromLanding) sessionStorage.removeItem('opi-tour');
     if(chained) sessionStorage.removeItem('opi-tour-chain');
-    if(fromLanding || (chained && !isNaN(t) && t>=seg.start-1 && (seg.seam>t))){
-      setTimeout(function(){ if(!document.getElementById('gate')) begin(fromLanding?seg.start:t); else btn.classList.add('pulse'); },500);
+    if(fromLanding){
+      if(document.getElementById('gate')){ document.addEventListener('opi-unlocked',function(){ begin(seg.start); }); }
+      else { setTimeout(function(){ begin(seg.start); },500); }
+    } else if(chained && !isNaN(t) && t>=seg.start-1 && seg.seam>t){
+      setTimeout(function(){ if(!document.getElementById('gate')) begin(t); else btn.classList.add('pulse'); },300);
     }
   }catch(e){}
 })();
